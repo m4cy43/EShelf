@@ -7,7 +7,7 @@ module.exports =  new Sequelize("eshelf","root","malvina", {
   host: 'localhost',
   dialect: 'mysql',
   operatorsAliases: false,
-
+  logging: false,
   pool: {
     max: 5,
     min: 0,

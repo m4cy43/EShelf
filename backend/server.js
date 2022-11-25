@@ -4,17 +4,17 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 const db = require('./config/db');
-//const errorHandler = require("./middleware/errorMiddleware");
+const errorHandler = require("./middleware/errorMiddleware");
 
 // Request body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-//app.use("/api/user", require("./routes/userRoute"));
+app.use("/api/user", require("./routes/userRoute"));
 
 // Error middleware
-//app.use(errorHandler);
+app.use(errorHandler);
 
 // DB connection test
 db.authenticate()

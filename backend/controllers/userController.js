@@ -7,16 +7,16 @@ const User = require("../models/userModel");
 // GET /api/user/signup
 // Public
 const createUser = asyncHandler(async (req, res) => {
-  const {name, email, password} = req.body;
+  const {email, password, name, surname, phone} = req.body;
 
   // Check the value
-  if(!name || !email || !password){
+  if(!email || !password || !name || !surname || !phone){
     res.status(400);
     throw new Error('Value is missing');
   }
 
   // Check if user exists by email
-  const checkIfUserExists = await User.findOne({email});
+  const checkIfUserExists = await User.findOne({where: {email}});
   if (checkIfUserExists){
     res.status(400);
     throw new Error("The user already exists");
@@ -28,16 +28,17 @@ const createUser = asyncHandler(async (req, res) => {
 
   // Create new user
   const user = await User.create({
-    name,
-    email,
-    password: hash
+    email: email,
+    password: hash,    
+    name: name,
+    surname: surname,
+    phone: phone
   });
   if (user) {
     res.status(201).json({
-      _id: user.id,
-      name: user.name,
+      id: user.id,
       email: user.email,
-      token: generateJWT(user._id)
+      token: generateJWT(user.id)
     });
   } else {
     res.status(400);
@@ -53,13 +54,12 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // Get user by email
   // Check the password 
-  const user = await User.findOne({email});
+  const user = await User.findOne({where: {email}});
   if (user && (await bcrypt.compare(password, user.password))){
     res.json({
-      _id: user.id,
-      name: user.name,
+      id: user.id,
       email: user.email,
-      token: generateJWT(user._id)
+      token: generateJWT(user.id)
     })
   } else {
     res.status(400)

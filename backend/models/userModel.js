@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const db = require("../config/database");
+const db = require("../config/db");
 
 const User = db.define(
   "user",
@@ -29,8 +29,8 @@ const User = db.define(
       allowNull: false,
       unique: true,
       validate: {
-        is: /^\+(380)[0-9]{9}$/
-      }
+        is: /^\+(380)[0-9]{9}$/,
+      },
     },
     IsAdmin: {
       type: DataTypes.BOOLEAN,
@@ -49,7 +49,7 @@ const User = db.define(
   }
 );
 
-User.sync()
+User.sync({ alter: true })
   .then((data) => {
     console.log("Table and model are synced");
   })
