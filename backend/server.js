@@ -3,7 +3,7 @@ const dotenv = require("dotenv").config({ path: "../.env" });
 const port = process.env.PORT || 3000;
 const app = express();
 
-const db = require('./config/db');
+const {db, tableSync} = require('./config/db');
 const errorHandler = require("./middleware/errorMiddleware");
 
 // Request body parsing
@@ -16,10 +16,11 @@ app.use("/api/user", require("./routes/userRoute"));
 // Error middleware
 app.use(errorHandler);
 
-// DB connection test
+// DB connection and sync test
 db.authenticate()
   .then(() => console.log('Database connected...'))
-  .catch(err => console.log('Error: ' + err))
+  .catch(err => console.log('Error: ' + err));
+tableSync();
 
 // Port listening
 app.listen(port, () => console.log(`Port: ${port}`));
