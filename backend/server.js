@@ -12,6 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use("/api/user", require("./routes/userRoute"));
+app.use("/api/author", require("./routes/authorRoute"));
 
 // Error middleware
 app.use(errorHandler);

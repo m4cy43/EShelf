@@ -6,6 +6,11 @@ const Section = require("./sectionModel");
 const Book = db.define(
   "book",
   {
+    uuid: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4
+    },
     title: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -29,14 +34,6 @@ const Book = db.define(
     debtedNumber: {
       type: DataTypes.INTEGER(2),
       allowNull: false,
-    },
-    sectionId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: Section,
-          key: 'id'
-        }
     }
   },
   {

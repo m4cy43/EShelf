@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -17,7 +17,6 @@ const db = new Sequelize("eshelf", "root", "malvina", {
 });
 
 const tableSync = async () => {
-  let tableList = [];
   const Author = require("../models/authorModel");
   const AuthorRef = require("../models/authorRefModel");
   const Book = require("../models/bookModel");
@@ -26,19 +25,29 @@ const tableSync = async () => {
   const GenreRef = require("../models/genreRefModel");
   const Section = require("../models/sectionModel");
   const User = require("../models/userModel");
-  tableList.push(User, Section, Genre, Author, Book, Debt, GenreRef, AuthorRef);
 
-  for (table of tableList) {
-    await table
-      .sync({ alter: true })
-      .then((data) => {
-        console.log(`Table ${table.toString()} and it model are synced`);
-      })
-      .catch((err) => {
-        console.log(`Table ${table.toString()} sync error`);
-        throw err;
-      });
-  }
+  Book.belongsToMany(Author, { through: AuthorRef });
+  Author.belongsToMany(Book, { through: AuthorRef });
+
+  Book.belongsToMany(Genre, { through: GenreRef });
+  Genre.belongsToMany(Book, { through: GenreRef });
+
+  Book.belongsToMany(User, { through: Debt });
+  User.belongsToMany(Book, { through: Debt });
+
+  Section.hasMany(Book);
+  Book.belongsTo(Section, {
+    foreignKey: { name: "sectionUuid", type: DataTypes.UUID },
+  });
+
+  db.sync({ alter: true })
+    .then((data) => {
+      console.log(`All tables and it models are synced`);
+    })
+    .catch((err) => {
+      console.log(`Tables sync error`);
+      throw err;
+    });
 };
 
 module.exports = { db, tableSync };

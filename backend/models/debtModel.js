@@ -7,6 +7,11 @@ const Book = require("./bookModel");
 const Debt = db.define(
   "debt",
   {
+    uuid: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4
+    },
     isBooked: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -21,20 +26,20 @@ const Debt = db.define(
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    bookId: {
-      type: DataTypes.INTEGER,
+    bookUuid: {
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: Book,
-        key: "id",
+        key: "uuid",
       },
     },
-    userId: {
-      type: DataTypes.INTEGER,
+    userUuid: {
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: User,
-        key: "id",
+        key: "uuid",
       },
     },
   },

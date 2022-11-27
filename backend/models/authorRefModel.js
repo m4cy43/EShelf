@@ -5,22 +5,27 @@ const Author = require("./authorModel");
 const Book = require("./bookModel");
 
 const AuthorRef= db.define(
-  "author_ref",
+  "authorRef",
   {
-    bookId: {
-      type: DataTypes.INTEGER,
+    uuid: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4
+    },
+    bookUuid: {
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: Book,
-        key: 'id'
+        key: 'uuid'
       }
     },
-    authorId: {
-        type: DataTypes.INTEGER,
+    authorUuid: {
+        type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: Author,
-          key: 'id'
+          key: 'uuid'
         }
       },
   },

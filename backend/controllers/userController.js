@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 // Create new user
-// GET /api/user/signup
+// Post /api/user/signup
 // Public
 const createUser = asyncHandler(async (req, res) => {
   const {email, password, name, surname, phone} = req.body;
@@ -68,7 +68,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 // Check auth (dev private)
-// POST /api/user/authuser
+// GET /api/user/authuser
 // Private
 const getAuthUser = asyncHandler(async (req, res) => {
   res.status(200).json(req.user);
