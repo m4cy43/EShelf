@@ -20,7 +20,7 @@ const authProtection = asyncHandler(async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             // Get the user from the token
             // Filter the `password` line from User object
-            req.user = await User.findByPk(decoded.id, {attributes: { exclude: ['password'] }})
+            req.user = await User.findByPk(decoded.uuid, {attributes: { exclude: ['password'] }})
 
             // Call next function in the middleware
             next();

@@ -4,6 +4,7 @@ const {
   createUser,
   loginUser,
   getAuthUser,
+  verifyUser
 } = require("../controllers/userController");
 
 // Auth middleware
@@ -16,5 +17,7 @@ router.post("/signup", createUser);
 router.post("/login", loginUser);
 // GET /api/user/authuser
 router.get("/authuser", authProtection, getAuthUser);
+// PUT /api/user/verify/{uuid}
+router.put("/verify/:uuid", authProtection, verifyUser)
 
 module.exports = router;
