@@ -41,7 +41,7 @@ const updateAuthor = asyncHandler(async (req, res) => {
 
   // Update the author
   author.set(req.body);
-  await author.save();  
+  await author.save();
   res.status(200).json(author);
 });
 

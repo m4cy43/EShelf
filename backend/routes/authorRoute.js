@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const {
-    getAuthor,
-    createAuthor,
-    updateAuthor,
-    deleteAuthor,
+  getAuthor,
+  createAuthor,
+  updateAuthor,
+  deleteAuthor,
 } = require("../controllers/authorController");
 
 // GET /api/author

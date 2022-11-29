@@ -4,12 +4,12 @@ const {
   createUser,
   loginUser,
   getAuthUser,
-  verifyUser
+  verifyUser,
 } = require("../controllers/userController");
 
 // Auth middleware
 // Routes protection
-const authProtection = require('../middleware/authMiddleware');
+const authProtection = require("../middleware/authMiddleware");
 
 // POST /api/user/signup
 router.post("/signup", createUser);
@@ -18,6 +18,6 @@ router.post("/login", loginUser);
 // GET /api/user/authuser
 router.get("/authuser", authProtection, getAuthUser);
 // PUT /api/user/verify/{uuid}
-router.put("/verify/:uuid", authProtection, verifyUser)
+router.put("/verify/:uuid", authProtection, verifyUser);
 
 module.exports = router;

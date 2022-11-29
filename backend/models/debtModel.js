@@ -10,7 +10,7 @@ const Debt = db.define(
     uuid: {
       type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4
+      defaultValue: DataTypes.UUIDV4,
     },
     isBooked: {
       type: DataTypes.BOOLEAN,

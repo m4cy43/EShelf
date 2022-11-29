@@ -36,9 +36,9 @@ const createUser = asyncHandler(async (req, res) => {
   });
   if (user) {
     res.status(201).json({
-      id: user.id,
+      uuid: user.uuid,
       email: user.email,
-      token: generateJWT(user.id),
+      token: generateJWT(user.uuid),
     });
   } else {
     res.status(400);
@@ -57,9 +57,9 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ where: { email } });
   if (user && (await bcrypt.compare(password, user.password))) {
     res.json({
-      id: user.id,
+      uuid: user.uuid,
       email: user.email,
-      token: generateJWT(user.id),
+      token: generateJWT(user.uuid),
     });
   } else {
     res.status(400);
@@ -78,7 +78,7 @@ const getAuthUser = asyncHandler(async (req, res) => {
 // PUT /api/user/verify/{uuid}
 // Private
 const verifyUser = asyncHandler(async (req, res) => {
-  let user = User.findByPk(req.params.uuid);
+  let user = await User.findByPk(req.params.uuid);
 
   // Check the unverified user exists
   if (!user) {
@@ -86,36 +86,34 @@ const verifyUser = asyncHandler(async (req, res) => {
     throw new Error("There is no such user");
   }
   // Check if auth user has admin rights
-  if (req.user.isAdmin !== 1) {
+  if (req.user.isAdmin !== true) {
     res.status(401);
     throw new Error("Unauthorized");
   }
   // Check if user already verified
-  if (user.isVerified !== 1) {
+  if (user.isVerified === true) {
     res.status(401);
     throw new Error("User already verified");
   }
 
-  user.set({ isVerified: 1 });
+  user.isVerified = true;
   await user.save();
-  res
-    .status(200)
-    .json({
-      uuid: user.uuid,
-      email: user.email,
-      isVerified: user.isVerified,
-    });
+  res.status(200).json({
+    uuid: user.uuid,
+    email: user.email,
+    isVerified: user.isVerified,
+  });
 });
 
 // Auxiliary function
 // Token generator: Creates JWT
-const generateJWT = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+const generateJWT = (uuid) => {
+  return jwt.sign({ uuid }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 module.exports = {
   createUser,
   loginUser,
   getAuthUser,
-  verifyUser
+  verifyUser,
 };

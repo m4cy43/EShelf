@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const {db} = require("../config/db");
+const { db } = require("../config/db");
 
 const Section = db.define(
   "section",
@@ -7,7 +7,7 @@ const Section = db.define(
     uuid: {
       type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4
+      defaultValue: DataTypes.UUIDV4,
     },
     sectionName: {
       type: DataTypes.STRING,

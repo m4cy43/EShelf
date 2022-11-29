@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const {db} = require("../config/db");
+const { db } = require("../config/db");
 
 const User = db.define(
   "user",
@@ -7,7 +7,7 @@ const User = db.define(
     uuid: {
       type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4
+      defaultValue: DataTypes.UUIDV4,
     },
     email: {
       type: DataTypes.STRING,
