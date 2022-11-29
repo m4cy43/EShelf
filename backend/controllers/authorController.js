@@ -4,7 +4,7 @@ const Author = require("../models/authorModel");
 // Get all authors
 // GET /api/author
 // Private
-const getAuthor = asyncHandler(async (req, res) => {
+const getAllAuthors = asyncHandler(async (req, res) => {
   const allAuthors = await Author.findAll();
   res.status(200).json(allAuthors);
 });
@@ -62,7 +62,7 @@ const deleteAuthor = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  getAuthor,
+  getAllAuthors,
   createAuthor,
   updateAuthor,
   deleteAuthor,

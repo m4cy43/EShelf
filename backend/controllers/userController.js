@@ -105,6 +105,42 @@ const verifyUser = asyncHandler(async (req, res) => {
   });
 });
 
+// Set admin rights (superadmin private)
+// PUT /api/user/verify/{uuid}
+// Private
+const setAdmin = asyncHandler(async (req, res) => {
+  let user = await User.findByPk(req.params.uuid);
+
+  // Check the unverified user exists
+  if (!user) {
+    res.status(401);
+    throw new Error("There is no such user");
+  }
+  // Check if auth user has admin rights
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  // Check if auth user has superadmin rights
+  if (req.user.email !== "superadmin@eshelf.adm") {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  // Check if user already verified
+  if (user.isAdmin === true) {
+    res.status(401);
+    throw new Error("User already verified");
+  }
+
+  user.isAdmin = true;
+  await user.save();
+  res.status(200).json({
+    uuid: user.uuid,
+    email: user.email,
+    isAdmin: user.isAdmin,
+  });
+});
+
 // Auxiliary function
 // Token generator: Creates JWT
 const generateJWT = (uuid) => {

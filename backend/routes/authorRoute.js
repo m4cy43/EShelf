@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getAuthor,
+  getAllAuthors,
   createAuthor,
   updateAuthor,
   deleteAuthor,
@@ -9,7 +9,7 @@ const {
 
 // GET /api/author
 // POST /api/author
-router.route("/").get(getAuthor).post(createAuthor);
+router.route("/").get(getAllAuthors).post(createAuthor);
 // PUT /api/author/{uuid}
 // DELETE /api/author/{uuid}
 router.route("/:uuid").put(updateAuthor).delete(deleteAuthor);
