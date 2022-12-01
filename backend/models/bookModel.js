@@ -34,6 +34,7 @@ const Book = db.define(
     debtedNumber: {
       type: DataTypes.INTEGER(2),
       allowNull: false,
+      defaultValue: 0,
     },
   },
   {

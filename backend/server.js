@@ -13,6 +13,9 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use("/api/user", require("./routes/userRoute"));
 app.use("/api/author", require("./routes/authorRoute"));
+app.use("/api/section", require("./routes/sectionRoute"));
+app.use("/api/genre", require("./routes/genreRoute"));
+app.use("/api/book", require("./routes/bookRoute"));
 
 // Error middleware
 app.use(errorHandler);
