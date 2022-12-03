@@ -87,6 +87,17 @@ const createBook = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Content required");
   }
+
+  // Check auth
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+
   // Create the book
   const book = await Book.create({
     title: req.body.title,
@@ -110,7 +121,10 @@ const createBook = asyncHandler(async (req, res) => {
   await book.addAuthors(authors);
   await book.addGenres(genres);
 
-  res.status(201).json(book);
+  const createdBook = await Book.findByPk(book.uuid, {
+    include: [{ model: Section }, { model: Author }, { model: Genre }],
+  });
+  res.status(201).json(createdBook);
 });
 
 // Delete a book
@@ -123,13 +137,12 @@ const deleteBook = asyncHandler(async (req, res) => {
   if (!book) {
     throw new Error("There is no such book");
   }
-  // Check the user exists
+  // Check auth
   if (!req.user) {
     res.status(401);
-    throw new Error("There is no such user");
+    throw new Error("Unauthorized");
   }
-  // Check the authorization
-  if (book.user.toString() !== req.user.id) {
+  if (req.user.isAdmin !== true) {
     res.status(401);
     throw new Error("Unauthorized");
   }

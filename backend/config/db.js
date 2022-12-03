@@ -40,7 +40,7 @@ const tableSync = async () => {
     foreignKey: { name: "sectionUuid", type: DataTypes.UUID },
   });
 
-  db.sync({ alter: true })
+  db.sync()
     .then((data) => {
       console.log(`All tables and it models are synced`);
     })

@@ -2,9 +2,11 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
+const Debt = require("../models/debtModel");
+const Book = require("../models/bookModel");
 
 // Create new user
-// Post /api/user/signup
+// POST /api/user/signup
 // Public
 const createUser = asyncHandler(async (req, res) => {
   const { email, password, name, surname, phone } = req.body;
@@ -106,7 +108,7 @@ const verifyUser = asyncHandler(async (req, res) => {
 });
 
 // Set admin rights (superadmin private)
-// PUT /api/user/verify/{uuid}
+// PUT /api/user/setadm/{uuid}
 // Private
 const setAdmin = asyncHandler(async (req, res) => {
   let user = await User.findByPk(req.params.uuid);
@@ -133,12 +135,64 @@ const setAdmin = asyncHandler(async (req, res) => {
   }
 
   user.isAdmin = true;
+  user.isVerified = true;
   await user.save();
   res.status(200).json({
     uuid: user.uuid,
     email: user.email,
     isAdmin: user.isAdmin,
   });
+});
+
+// Create the superadmin
+// POST /api/user/sadm
+// Private
+const setSAdmin = asyncHandler(async (req, res) => {
+  let sadmin = await User.findOne({
+    where: { email: "superadmin@eshelf.adm" },
+  });
+  if (!sadmin) {
+    res.status(401);
+    throw new Error("There is no superadmin account yet");
+  }
+  if (sadmin.isAdmin) {
+    res.status(418);
+    throw new Error("Already admin");
+  }
+  sadmin.isAdmin = true;
+  sadmin.isVerified = true;
+  await sadmin.save();
+  res.status(200).json({ sadmin });
+});
+
+// Get all unverified users
+// GET /api/user/unveruser
+// Private
+const getUnverified = asyncHandler(async (req, res) => {
+  const user = await User.findAll({
+    where: { isVerified: false },
+  });
+  // Check if auth user has admin rights
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  res.status(200).json({ user });
+});
+
+// Get all users with debts
+// GET /api/user/debtuser
+// Private
+const getDebts = asyncHandler(async (req, res) => {
+  const user = await User.findAll({
+    include: { model: Debt, where: { isDebted: true } },
+  });
+  // Check if auth user has admin rights
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  res.status(200).json({ user });
 });
 
 // Auxiliary function
@@ -152,4 +206,8 @@ module.exports = {
   loginUser,
   getAuthUser,
   verifyUser,
+  setAdmin,
+  setSAdmin,
+  getUnverified,
+  getDebts,
 };

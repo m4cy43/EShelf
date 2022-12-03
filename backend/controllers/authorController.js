@@ -19,6 +19,16 @@ const createAuthor = asyncHandler(async (req, res) => {
     throw new Error("Content required");
   }
 
+  // Check auth
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+
   // Create the author
   const author = await Author.create({
     name: req.body.name,

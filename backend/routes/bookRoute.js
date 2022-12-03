@@ -8,14 +8,18 @@ const {
   deleteBook,
 } = require("../controllers/bookController");
 
+// Auth middleware
+// Routes protection
+const authProtection = require("../middleware/authMiddleware");
+
 // GET /api/book
 // POST /api/book
-router.route("/").get(getAllBooks).post(createBook);
+router.route("/").get(getAllBooks).post(authProtection, createBook);
 // DELETE /api/book/{uuid}
-router.route("/:uuid").delete(deleteBook);
+router.route("/:uuid").delete(authProtection, deleteBook);
 // POST /api/book/find
-router.route("/find").delete(getSimplyBooks);
+router.route("/find").post(getSimplyBooks);
 // POST /api/book/rfind
-router.route("/rfind").delete(getRecursivelyBooks);
+router.route("/rfind").post(getRecursivelyBooks);
 
 module.exports = router;
