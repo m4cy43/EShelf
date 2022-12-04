@@ -49,6 +49,16 @@ const updateAuthor = asyncHandler(async (req, res) => {
     throw new Error("There is no such author");
   }
 
+  // Check auth
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+
   // Update the author
   author.set(req.body);
   await author.save();
@@ -64,6 +74,16 @@ const deleteAuthor = asyncHandler(async (req, res) => {
   // Check the author exists
   if (!author) {
     throw new Error("There is no such author");
+  }
+
+  // Check auth
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
   }
 
   // Delete author

@@ -19,6 +19,16 @@ const createGenre = asyncHandler(async (req, res) => {
     throw new Error("Content required");
   }
 
+  // Check auth
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+
   // Create the genre
   const genre = await Genre.create({
     genreName: req.body.genreName,
@@ -37,6 +47,16 @@ const updateGenre = asyncHandler(async (req, res) => {
     throw new Error("There is no such genre");
   }
 
+  // Check auth
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+
   // Update the genre
   genre.set(req.body);
   await genre.save();
@@ -52,6 +72,16 @@ const deleteGenre = asyncHandler(async (req, res) => {
   // Check the genre exists
   if (!genre) {
     throw new Error("There is no such genre");
+  }
+
+  // Check auth
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
   }
 
   // Delete genre

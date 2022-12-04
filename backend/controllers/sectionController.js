@@ -19,6 +19,16 @@ const createSection = asyncHandler(async (req, res) => {
     throw new Error("Content required");
   }
 
+  // Check auth
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+
   // Create the section
   const section = await Section.create({
     sectionName: req.body.sectionName,
@@ -37,6 +47,16 @@ const updateSection = asyncHandler(async (req, res) => {
     throw new Error("There is no such section");
   }
 
+  // Check auth
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+
   // Update the section
   section.set(req.body);
   await section.save();
@@ -52,6 +72,16 @@ const deleteSection = asyncHandler(async (req, res) => {
   // Check the section exists
   if (!section) {
     throw new Error("There is no such section");
+  }
+
+  // Check auth
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
   }
 
   // Delete section

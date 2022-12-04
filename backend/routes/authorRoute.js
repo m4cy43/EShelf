@@ -13,7 +13,7 @@ const authProtection = require("../middleware/authMiddleware");
 
 // GET /api/author
 // POST /api/author
-router.route("/").get(authProtection, getAllAuthors).post(authProtection, createAuthor);
+router.route("/").get(getAllAuthors).post(authProtection, createAuthor);
 // PUT /api/author/{uuid}
 // DELETE /api/author/{uuid}
 router.route("/:uuid").put(authProtection, updateAuthor).delete(authProtection, deleteAuthor);

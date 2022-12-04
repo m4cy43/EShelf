@@ -20,49 +20,36 @@ const getAllBooks = asyncHandler(async (req, res) => {
 // GET /api/book/find
 // Private
 const getSimplyBooks = asyncHandler(async (req, res) => {
-  let books = await Book.findAll({
-    include: [{ model: Section }, { model: Author }, { model: Genre }],
-  });
-  if (req.body.title && req.body.title !== "") {
-    books = await books.findAll({
-      where: { title: { [Op.substring]: req.body.title } },
-    });
+  if (!req.query.title) {
+    res.status(400);
+    throw new Error("Wrong query");
   }
+  const books = await Book.findAll({
+    include: [{ model: Section }, { model: Author }, { model: Genre }],
+    where: { title: { [Op.substring]: req.query.title } },
+  });
   res.status(200).json(books);
 });
 
-// Get recursively books
-// GET /api/book/rfind
+// Get books by advanced search
+// GET /api/book/findby
 // Private
 const getRecursivelyBooks = asyncHandler(async (req, res) => {
-  let books = await Book.findAll({
+  const { title, author, year, genre, section } = req.query;
+  if (!title || !author || !year || !genre || !section) {
+    res.status(400);
+    throw new Error("Wrong query");
+  }
+  const books = await Book.findAll({
     include: [{ model: Section }, { model: Author }, { model: Genre }],
+    where: {
+      title: { [Op.substring]: title },
+      "$authors.surname$": { [Op.substring]: author },
+      year: { [Op.substring]: year },
+      "$genres.genreName$": { [Op.substring]: genre },
+      "$section.sectionName$": { [Op.substring]: section },
+    },
   });
-  if (req.body.title && req.body.title !== "") {
-    books = await books.findAll({
-      where: { title: { [Op.substring]: req.body.title } },
-    });
-  }
-  if (req.body.author && req.body.author !== "") {
-    books = await books.findAll({
-      where: { author: { [Op.substring]: req.body.author } },
-    });
-  }
-  if (req.body.year && req.body.year !== "") {
-    books = await books.findAll({
-      where: { year: { [Op.substring]: req.body.year } },
-    });
-  }
-  if (req.body.genres && req.body.genres !== "") {
-    books = await books.findAll({
-      where: { genres: { [Op.substring]: req.body.genres } },
-    });
-  }
-  if (req.body.section && req.body.section !== "") {
-    books = await books.findAll({
-      where: { section: { [Op.substring]: req.body.section } },
-    });
-  }
   res.status(200).json(books);
 });
 
@@ -115,7 +102,6 @@ const createBook = asyncHandler(async (req, res) => {
   let genres = await Genre.findAll({
     where: { uuid: { [Op.or]: req.body.genres } },
   });
-  console.log(genres);
 
   await section.addBook(book);
   await book.addAuthors(authors);
