@@ -45,7 +45,8 @@ const Debt = db.define(
   },
   {
     freezeTableName: true,
-    timestamps: false,
+    timestamps: true,
+    createdAt: false,
   }
 );
 

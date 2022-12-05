@@ -25,11 +25,11 @@ router.get("/authuser", authProtection, getAuthUser);
 // PUT /api/user/setadm/{uuid}
 // PUT /api/user/setadm/{uuid}
 router.put("/verify/:uuid", authProtection, verifyUser);
-router.put("/setadm/:uuid", authProtection, setAdmin);
+router.put("/adm/:uuid", authProtection, setAdmin);
 router.put("/sadm", authProtection, setSAdmin);
-// GET /api/user/unveruser
-// GET /api/user/debtuser
-router.get("/unveruser", authProtection, getUnverified);
-router.get("/debtuser", authProtection, getDebts);
+// GET /api/user/verify
+// GET /api/user/debt
+router.get("/verify", authProtection, getUnverified);
+router.get("/debt", authProtection, getDebts);
 
 module.exports = router;

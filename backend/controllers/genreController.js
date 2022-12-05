@@ -20,10 +20,6 @@ const createGenre = asyncHandler(async (req, res) => {
   }
 
   // Check auth
-  if (!req.user) {
-    res.status(401);
-    throw new Error("Unauthorized");
-  }
   if (req.user.isAdmin !== true) {
     res.status(401);
     throw new Error("Unauthorized");
@@ -48,10 +44,6 @@ const updateGenre = asyncHandler(async (req, res) => {
   }
 
   // Check auth
-  if (!req.user) {
-    res.status(401);
-    throw new Error("Unauthorized");
-  }
   if (req.user.isAdmin !== true) {
     res.status(401);
     throw new Error("Unauthorized");
@@ -75,10 +67,6 @@ const deleteGenre = asyncHandler(async (req, res) => {
   }
 
   // Check auth
-  if (!req.user) {
-    res.status(401);
-    throw new Error("Unauthorized");
-  }
   if (req.user.isAdmin !== true) {
     res.status(401);
     throw new Error("Unauthorized");

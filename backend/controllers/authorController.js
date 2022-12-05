@@ -20,10 +20,6 @@ const createAuthor = asyncHandler(async (req, res) => {
   }
 
   // Check auth
-  if (!req.user) {
-    res.status(401);
-    throw new Error("Unauthorized");
-  }
   if (req.user.isAdmin !== true) {
     res.status(401);
     throw new Error("Unauthorized");
@@ -50,10 +46,6 @@ const updateAuthor = asyncHandler(async (req, res) => {
   }
 
   // Check auth
-  if (!req.user) {
-    res.status(401);
-    throw new Error("Unauthorized");
-  }
   if (req.user.isAdmin !== true) {
     res.status(401);
     throw new Error("Unauthorized");
@@ -77,10 +69,6 @@ const deleteAuthor = asyncHandler(async (req, res) => {
   }
 
   // Check auth
-  if (!req.user) {
-    res.status(401);
-    throw new Error("Unauthorized");
-  }
   if (req.user.isAdmin !== true) {
     res.status(401);
     throw new Error("Unauthorized");

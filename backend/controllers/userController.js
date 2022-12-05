@@ -108,7 +108,7 @@ const verifyUser = asyncHandler(async (req, res) => {
 });
 
 // Set admin rights (superadmin private)
-// PUT /api/user/setadm/{uuid}
+// PUT /api/user/adm/{uuid}
 // Private
 const setAdmin = asyncHandler(async (req, res) => {
   let user = await User.findByPk(req.params.uuid);
@@ -145,7 +145,7 @@ const setAdmin = asyncHandler(async (req, res) => {
 });
 
 // Create the superadmin
-// POST /api/user/sadm
+// PUT /api/user/sadm
 // Private
 const setSAdmin = asyncHandler(async (req, res) => {
   let sadmin = await User.findOne({
@@ -159,6 +159,11 @@ const setSAdmin = asyncHandler(async (req, res) => {
     res.status(418);
     throw new Error("Already admin");
   }
+  // Check if auth user has superadmin rights
+  if (req.user.email !== "superadmin@eshelf.adm") {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
   sadmin.isAdmin = true;
   sadmin.isVerified = true;
   await sadmin.save();
@@ -166,11 +171,12 @@ const setSAdmin = asyncHandler(async (req, res) => {
 });
 
 // Get all unverified users
-// GET /api/user/unveruser
+// GET /api/user/verify
 // Private
 const getUnverified = asyncHandler(async (req, res) => {
   const user = await User.findAll({
     where: { isVerified: false },
+    order: [[User, "updatedAt", "DESC"]],
   });
   // Check if auth user has admin rights
   if (req.user.isAdmin !== true) {
@@ -181,11 +187,12 @@ const getUnverified = asyncHandler(async (req, res) => {
 });
 
 // Get all users with debts
-// GET /api/user/debtuser
+// GET /api/user/debt
 // Private
 const getDebts = asyncHandler(async (req, res) => {
   const user = await User.findAll({
     include: { model: Debt, where: { isDebted: true } },
+    order: [[Debt, "updatedAt", "DESC"]],
   });
   // Check if auth user has admin rights
   if (req.user.isAdmin !== true) {
@@ -194,6 +201,15 @@ const getDebts = asyncHandler(async (req, res) => {
   }
   res.status(200).json({ user });
 });
+
+// Change from Booked to Debted
+// PUT /api/user/booked
+// Private
+
+// Change from Booked to Debted
+// PUT /api/user/debt
+// Private
+
 
 // Auxiliary function
 // Token generator: Creates JWT

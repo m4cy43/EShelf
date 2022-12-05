@@ -50,7 +50,8 @@ const User = db.define(
   },
   {
     freezeTableName: true,
-    timestamps: false,
+    timestamps: true,
+    createdAt: false,
   }
 );
 
