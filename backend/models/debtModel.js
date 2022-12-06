@@ -23,8 +23,9 @@ const Debt = db.define(
       defaultValue: false,
     },
     deadlineDate: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: (new Date())
     },
     bookUuid: {
       type: DataTypes.UUID,

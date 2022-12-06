@@ -9,6 +9,9 @@ const {
   setSAdmin,
   getUnverified,
   getDebts,
+  getBooked,
+  bookTheBook,
+  debtTheBook
 } = require("../controllers/userController");
 
 // Auth middleware
@@ -29,7 +32,14 @@ router.put("/adm/:uuid", authProtection, setAdmin);
 router.put("/sadm", authProtection, setSAdmin);
 // GET /api/user/verify
 // GET /api/user/debt
+// POST /api/user/book/{uuid}
+// PUT /api/user/debt?user=_&book=_
+// DELETE /api/user/debt?user=_&book=_
 router.get("/verify", authProtection, getUnverified);
 router.get("/debt", authProtection, getDebts);
+router.get("/book", authProtection, getBooked);
+router.post("/book/:uuid", authProtection, bookTheBook);
+router.put("/debt", authProtection, debtTheBook);
+router.delete("/debt", authProtection, debtTheBook);
 
 module.exports = router;

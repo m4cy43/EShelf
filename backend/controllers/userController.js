@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const Debt = require("../models/debtModel");
 const Book = require("../models/bookModel");
+const { Op } = require("sequelize");
 
 // Create new user
 // POST /api/user/signup
@@ -191,8 +192,9 @@ const getUnverified = asyncHandler(async (req, res) => {
 // Private
 const getDebts = asyncHandler(async (req, res) => {
   const user = await User.findAll({
-    include: { model: Debt, where: { isDebted: true } },
-    order: [[Debt, "updatedAt", "DESC"]],
+    include: { model: Book },
+    where: { "$books.debt.isDebted$": true },
+    order: [[Book, Debt, "updatedAt", "DESC"]],
   });
   // Check if auth user has admin rights
   if (req.user.isAdmin !== true) {
@@ -202,14 +204,77 @@ const getDebts = asyncHandler(async (req, res) => {
   res.status(200).json({ user });
 });
 
-// Change from Booked to Debted
-// PUT /api/user/booked
+// Get all users with debts
+// GET /api/user/book
 // Private
+const getBooked = asyncHandler(async (req, res) => {
+  const user = await User.findAll({
+    include: { model: Book },
+    where: { "$books.debt.isBooked$": true },
+    order: [[Book, Debt, "updatedAt", "DESC"]],
+  });
+  // Check if auth user has admin rights
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  res.status(200).json({ user });
+});
+
+// Booked the book for user
+// POST /api/user/book/{uuid}
+// Private
+const bookTheBook = asyncHandler(async (req, res) => {
+  let user = await User.findByPk(req.user.uuid);
+  if (!user || !user.isVerified) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  let book = await Book.findByPk(req.params.uuid);
+  if (!book) {
+    res.status(401);
+    throw new Error("There is no such book");
+  }
+  await user.addBook(book);
+  let fromDebt = await Debt.findOne({ where: { userUuid: user.uuid } });
+  fromDebt.isBooked = true;
+  let datetochange = new Date(fromDebt.deadlineDate);
+  datetochange.setDate(datetochange.getDate() + 7);
+  fromDebt.deadlineDate = datetochange;
+  await fromDebt.save();
+  res.status(200).json({ fromDebt });
+});
 
 // Change from Booked to Debted
-// PUT /api/user/debt
+// PUT /api/user/debt?user=_&book=_
 // Private
-
+const debtTheBook = asyncHandler(async (req, res) => {
+  const {user, book} = req.query;
+  if (!user || !book){
+    res.status(400);
+    throw new Error("Wrong query");
+  }
+  let booked = await Debt.findOne({
+    where: {
+      [Op.and]: [{ userUuid: user }, { bookUuid: book }],
+    },
+  });
+  if (!booked) {
+    res.status(400);
+    throw new Error("User do not exist or have no booked book");
+  }
+  if (booked.isDebted == true) {
+    res.status(400);
+    throw new Error("User already have a debt");
+  }
+  booked.isDebted = true;
+  booked.isBooked = false;
+  let datetochange = new Date();
+  datetochange.setDate(datetochange.getDate() + 14);
+  booked.deadlineDate = datetochange;
+  await booked.save();
+  res.status(200).json({ booked });
+});
 
 // Auxiliary function
 // Token generator: Creates JWT
@@ -226,4 +291,7 @@ module.exports = {
   setSAdmin,
   getUnverified,
   getDebts,
+  getBooked,
+  bookTheBook,
+  debtTheBook,
 };

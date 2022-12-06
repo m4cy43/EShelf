@@ -11,7 +11,7 @@ const { Op } = require("sequelize");
 const getAllBooks = asyncHandler(async (req, res) => {
   const allBooks = await Book.findAll({
     include: [{ model: Section }, { model: Author }, { model: Genre }],
-    order: [[Book, "createdAt", "DESC"]],
+    order: [["UpdatedAt", "DESC"]],
   });
   res.status(200).json(allBooks);
 });
@@ -41,7 +41,7 @@ const getSimplyBooks = asyncHandler(async (req, res) => {
   const books = await Book.findAll({
     include: [{ model: Section }, { model: Author }, { model: Genre }],
     where: { title: { [Op.substring]: req.query.title } },
-    order: [[Book, "createdAt", "DESC"]],
+    order: [["UpdatedAt", "DESC"]],
   });
   res.status(200).json(books);
 });
@@ -64,7 +64,7 @@ const getRecursivelyBooks = asyncHandler(async (req, res) => {
       "$genres.genreName$": { [Op.substring]: genre },
       "$section.sectionName$": { [Op.substring]: section },
     },
-    order: [[Book, "createdAt", "DESC"]],
+    order: [[Book, "UpdatedAt", "DESC"]],
   });
   res.status(200).json(books);
 });
@@ -75,18 +75,17 @@ const getRecursivelyBooks = asyncHandler(async (req, res) => {
 const createBook = asyncHandler(async (req, res) => {
   // Check the content exists
   if (
-    !req.body.title &&
-    !req.body.year &&
-    !req.body.description &&
-    !req.body.number &&
-    !req.body.debtedNumber
+    !req.body.title ||
+    !req.body.year ||
+    !req.body.description ||
+    !req.body.number
   ) {
     res.status(400);
     throw new Error("Content required");
   }
 
   // Check the associations exists
-  if (!req.body.section && !req.body.genres && !req.body.author) {
+  if (!req.body.section || !req.body.genres || !req.body.authors) {
     res.status(400);
     throw new Error("Content required");
   }
@@ -109,7 +108,7 @@ const createBook = asyncHandler(async (req, res) => {
   // Create associations
   let section = await Section.findByPk(req.body.section);
   let authors = await Author.findAll({
-    where: { uuid: { [Op.or]: req.body.author } },
+    where: { uuid: { [Op.or]: req.body.authors } },
   });
   let genres = await Genre.findAll({
     where: { uuid: { [Op.or]: req.body.genres } },
