@@ -147,6 +147,12 @@ const deleteBook = asyncHandler(async (req, res) => {
   res.status(200).json({ id: req.params.uuid });
 });
 
+// Increase book num by one
+// PUT /api/book/inc/{uuid}
+const addBookNum = asyncHandler(async (req, res) => {
+  let book = findByPk(req.params.uuid);
+});
+
 module.exports = {
   getAllBooks,
   getBookByUuid,
