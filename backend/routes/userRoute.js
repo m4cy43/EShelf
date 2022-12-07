@@ -4,6 +4,7 @@ const {
   createUser,
   loginUser,
   getAuthUser,
+  changeCred,
   verifyUser,
   setAdmin,
   setSAdmin,
@@ -20,6 +21,8 @@ router.post("/signup", createUser);
 router.post("/login", loginUser);
 // GET /api/user/authuser
 router.get("/authuser", authProtection, getAuthUser);
+// PUT /api/user/chngcred
+router.put("/chngcred", authProtection, changeCred);
 // GET /api/user/verify
 router.get("/verify", authProtection, getUnverified);
 // PUT /api/user/verify/{uuid}

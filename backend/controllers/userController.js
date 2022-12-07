@@ -70,11 +70,60 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Check auth (dev private)
+// Check auth user
 // GET /api/user/authuser
 // Private
 const getAuthUser = asyncHandler(async (req, res) => {
   res.status(200).json(req.user);
+});
+
+// Change user's credentials
+// PUT /api/user/chngcred
+// Private
+const changeCred = asyncHandler(async (req, res) => {
+  // Check if user verified
+  if (user.isVerified !== true) {
+    res.status(401);
+    throw new Error("User is not verified yet");
+  }
+  const { email, password, name, surname, phone } = req.body;
+  // Check the value
+  if (!email || !password || !name || !surname || !phone) {
+    res.status(400);
+    throw new Error("Value is missing");
+  }
+  // Check if user exists by email
+  const checkIfUserExists = await User.findOne({ where: { email } });
+  if (checkIfUserExists) {
+    res.status(400);
+    throw new Error("The user already exists");
+  }
+  // To update the current user
+  let userToUpdate = await User.findByPk(req.user.uuid);
+  // Encryption & hashing
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(password.toString(), salt);
+  // Update the data
+  await userToUpdate.set({
+    email: email,
+    password: hash,
+    name: name,
+    surname: surname,
+    phone: phone,
+  });
+  // Save the changes
+  userToUpdate.save();
+  // Check update data
+  if (user) {
+    res.status(201).json({
+      uuid: user.uuid,
+      email: user.email,
+      token: generateJWT(user.uuid),
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid user data");
+  }
 });
 
 // Verify the user (admin private)
@@ -197,6 +246,7 @@ module.exports = {
   createUser,
   loginUser,
   getAuthUser,
+  changeCred,
   verifyUser,
   setAdmin,
   setSAdmin,

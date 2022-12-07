@@ -5,8 +5,11 @@ const {
   getBookByUuid,
   getSimplyBooks,
   getRecursivelyBooks,
+  getAuthorsBooks,
   createBook,
   deleteBook,
+  incBookNum,
+  decBookNum
 } = require("../controllers/bookController");
 
 // Auth middleware
@@ -23,5 +26,11 @@ router.route("/:uuid").delete(authProtection, deleteBook).get(getBookByUuid);
 router.route("/find").get(getSimplyBooks);
 // POST /api/book/afind?title=_&author=_&year=_&genre=_&section=_
 router.route("/afind").get(getRecursivelyBooks);
+// GET /api/book/authorall/{uuid}
+router.route("/authorall/:uuid").get(getAuthorsBooks);
+// PUT /api/book/inc/{uuid}
+router.route("/inc:uuid").put(authProtection, incBookNum);
+// PUT /api/book/dec/{uuid}
+router.route("/dec:uuid").put(authProtection, decBookNum);
 
 module.exports = router;

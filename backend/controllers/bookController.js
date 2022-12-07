@@ -69,6 +69,24 @@ const getRecursivelyBooks = asyncHandler(async (req, res) => {
   res.status(200).json(books);
 });
 
+// Get all author's book
+// GET /api/book/authorall/{uuid}
+// Private
+const getAuthorsBooks = asyncHandler(async (req, res) => {
+  const books = await Book.findAll({
+    include: [{ model: Section }, { model: Author }, { model: Genre }],
+    where: {
+      "$authors.uuid$": req.params,
+    },
+    order: [[Book, "UpdatedAt", "DESC"]],
+  });
+  if (!books) {
+    res.status(400);
+    throw new Error("No books for this author or wrong query");
+  }
+  res.status(200).json(books);
+});
+
 // Create a book
 // POST /api/book
 // Private
@@ -149,8 +167,42 @@ const deleteBook = asyncHandler(async (req, res) => {
 
 // Increase book num by one
 // PUT /api/book/inc/{uuid}
-const addBookNum = asyncHandler(async (req, res) => {
+// Private
+const incBookNum = asyncHandler(async (req, res) => {
   let book = findByPk(req.params.uuid);
+  // Check auth
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (book.number <= 0) {
+    book.number = 0;
+    await book.save();
+    res.status(200).json({ num: book.number });
+  }
+  book.number++;
+  await book.save();
+  res.status(200).json({ num: book.number });
+});
+
+// Increase book num by one
+// PUT /api/book/dec/{uuid}
+// Private
+const decBookNum = asyncHandler(async (req, res) => {
+  let book = findByPk(req.params.uuid);
+  // Check auth
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  if (book.number <= 0) {
+    book.number = 0;
+    await book.save();
+    res.status(200).json({ num: book.number });
+  }
+  book.number--;
+  await book.save();
+  res.status(200).json({ num: book.number });
 });
 
 module.exports = {
@@ -158,6 +210,9 @@ module.exports = {
   getBookByUuid,
   getSimplyBooks,
   getRecursivelyBooks,
+  getAuthorsBooks,
   createBook,
   deleteBook,
+  incBookNum,
+  decBookNum,
 };
