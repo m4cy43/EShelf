@@ -82,7 +82,7 @@ const getAuthUser = asyncHandler(async (req, res) => {
 // Private
 const changeCred = asyncHandler(async (req, res) => {
   // Check if user verified
-  if (user.isVerified !== true) {
+  if (req.user.isVerified !== true) {
     res.status(401);
     throw new Error("User is not verified yet");
   }
@@ -114,11 +114,11 @@ const changeCred = asyncHandler(async (req, res) => {
   // Save the changes
   userToUpdate.save();
   // Check update data
-  if (user) {
+  if (userToUpdate) {
     res.status(201).json({
-      uuid: user.uuid,
-      email: user.email,
-      token: generateJWT(user.uuid),
+      uuid: userToUpdate.uuid,
+      email: userToUpdate.email,
+      token: generateJWT(userToUpdate.uuid),
     });
   } else {
     res.status(400);
@@ -226,7 +226,7 @@ const setSAdmin = asyncHandler(async (req, res) => {
 const getUnverified = asyncHandler(async (req, res) => {
   const user = await User.findAll({
     where: { isVerified: false },
-    order: [[User, "updatedAt", "DESC"]],
+    order: [["updatedAt", "DESC"]],
   });
   // Check if auth user has admin rights
   if (req.user.isAdmin !== true) {

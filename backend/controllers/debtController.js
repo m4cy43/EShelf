@@ -71,11 +71,6 @@ const getUserBookings = asyncHandler(async (req, res) => {
 // Private
 const bookTheBook = asyncHandler(async (req, res) => {
   let user = await User.findByPk(req.user.uuid);
-  // Check if auth user has admin rights
-  if (req.user.isAdmin !== true) {
-    res.status(401);
-    throw new Error("Unauthorized");
-  }
   if (!user || !user.isVerified) {
     res.status(401);
     throw new Error("Unauthorized");
@@ -86,7 +81,11 @@ const bookTheBook = asyncHandler(async (req, res) => {
     throw new Error("There is no such book");
   }
   await user.addBook(book);
-  let fromDebt = await Debt.findOne({ where: { userUuid: user.uuid } });
+  let fromDebt = await Debt.findOne({
+    where: {
+      [Op.and]: [{ userUuid: user.uuid }, { bookUuid: req.params.uuid }],
+    },
+  });
   fromDebt.isBooked = true;
   let datetochange = new Date(fromDebt.deadlineDate);
   datetochange.setDate(datetochange.getDate() + 7);
@@ -109,9 +108,9 @@ const debtTheBook = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Unauthorized");
   }
-  let changeNumber = await findByPk(book);
+  let changeNumber = await Book.findByPk(book);
   if (changeNumber.number == 0) {
-    res.status(204);
+    res.status(418);
     throw new Error("No available books");
   }
   let booked = await Debt.findOne({
@@ -158,19 +157,19 @@ const deleteUserDebt = asyncHandler(async (req, res) => {
       [Op.and]: [{ userUuid: user }, { bookUuid: book }],
     },
   });
-  if (!booked) {
+  if (!debt) {
     res.status(400);
-    throw new Error("User do not exist or have no booked book");
+    throw new Error("User do not exist or have no debts");
   }
-  if (booked.isDebted == true) {
+  if (debt.isDebted != true) {
     res.status(400);
-    throw new Error("User already have a debt");
+    throw new Error("User have no debt");
   }
   await debt.destroy();
   let changeNumber = await Book.findByPk(book);
   changeNumber.debtedNumber--;
   changeNumber.number++;
-  changeNumber.save();
+  await changeNumber.save();
   res.status(200).json({ uuid: req.params.uuid });
 });
 
@@ -179,7 +178,7 @@ const deleteUserDebt = asyncHandler(async (req, res) => {
 // Private
 const deleteBooking = asyncHandler(async (req, res) => {
   const user = req.user.uuid;
-  const book = req.params;
+  const book = req.params.uuid;
   if (!user || !book) {
     res.status(400);
     throw new Error("Wrong query");
@@ -187,8 +186,33 @@ const deleteBooking = asyncHandler(async (req, res) => {
   let booking = await Debt.findOne({
     where: { [Op.and]: [{ userUuid: user }, { bookUuid: book }] },
   });
-  if (!booking || !booking.isBooked || booking.isDebted) {
-    res.status(204);
+  if (!booking || !booking.isBooked || booking.isDebted == 1) {
+    res.status(400);
+    throw new Error("No booking or the book is debted");
+  }
+  await booking.destroy();
+  res.status(200).json({ user: booking.userUuid, book: booking.bookUuid });
+});
+
+// Delete user booking (adm)
+// DELETE /api/debt/book?user=_&book=_
+// Private
+const deleteBookingAdm = asyncHandler(async (req, res) => {
+  const { user, book } = req.query;
+  if (!user || !book) {
+    res.status(400);
+    throw new Error("Wrong query");
+  }
+  // Check if auth user has admin rights
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  let booking = await Debt.findOne({
+    where: { [Op.and]: [{ userUuid: user }, { bookUuid: book }] },
+  });
+  if (!booking || !booking.isBooked || booking.isDebted == 1) {
+    res.status(400);
     throw new Error("No booking or the book is debted");
   }
   await booking.destroy();
@@ -204,4 +228,5 @@ module.exports = {
   debtTheBook,
   deleteUserDebt,
   deleteBooking,
+  deleteBookingAdm,
 };

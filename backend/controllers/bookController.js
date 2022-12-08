@@ -17,14 +17,14 @@ const getAllBooks = asyncHandler(async (req, res) => {
 });
 
 // Get all book info
-// GET /api/book/{uuid}
+// GET /api/book/one/{uuid}
 // Private
 const getBookByUuid = asyncHandler(async (req, res) => {
   if (!req.params.uuid) {
     res.status(400);
     throw new Error("Wrong query");
   }
-  const theBook = await Book.findByPk(req.query.uuid, {
+  const theBook = await Book.findByPk(req.params.uuid, {
     include: [{ model: Section }, { model: Author }, { model: Genre }],
   });
   res.status(200).json(theBook);
@@ -64,7 +64,7 @@ const getRecursivelyBooks = asyncHandler(async (req, res) => {
       "$genres.genreName$": { [Op.substring]: genre },
       "$section.sectionName$": { [Op.substring]: section },
     },
-    order: [[Book, "UpdatedAt", "DESC"]],
+    order: [["UpdatedAt", "DESC"]],
   });
   res.status(200).json(books);
 });
@@ -76,9 +76,9 @@ const getAuthorsBooks = asyncHandler(async (req, res) => {
   const books = await Book.findAll({
     include: [{ model: Section }, { model: Author }, { model: Genre }],
     where: {
-      "$authors.uuid$": req.params,
+      "$authors.uuid$": req.params.uuid,
     },
-    order: [[Book, "UpdatedAt", "DESC"]],
+    order: [["UpdatedAt", "DESC"]],
   });
   if (!books) {
     res.status(400);
@@ -143,7 +143,7 @@ const createBook = asyncHandler(async (req, res) => {
 });
 
 // Delete a book
-// DELETE /api/book/{uuid}
+// DELETE /api/book/one/{uuid}
 // Private
 const deleteBook = asyncHandler(async (req, res) => {
   const book = await Book.findByPk(req.params.uuid);
@@ -169,16 +169,11 @@ const deleteBook = asyncHandler(async (req, res) => {
 // PUT /api/book/inc/{uuid}
 // Private
 const incBookNum = asyncHandler(async (req, res) => {
-  let book = findByPk(req.params.uuid);
+  let book = await Book.findByPk(req.params.uuid);
   // Check auth
   if (req.user.isAdmin !== true) {
     res.status(401);
     throw new Error("Unauthorized");
-  }
-  if (book.number <= 0) {
-    book.number = 0;
-    await book.save();
-    res.status(200).json({ num: book.number });
   }
   book.number++;
   await book.save();
@@ -189,7 +184,7 @@ const incBookNum = asyncHandler(async (req, res) => {
 // PUT /api/book/dec/{uuid}
 // Private
 const decBookNum = asyncHandler(async (req, res) => {
-  let book = findByPk(req.params.uuid);
+  let book = await Book.findByPk(req.params.uuid);
   // Check auth
   if (req.user.isAdmin !== true) {
     res.status(401);
@@ -199,10 +194,11 @@ const decBookNum = asyncHandler(async (req, res) => {
     book.number = 0;
     await book.save();
     res.status(200).json({ num: book.number });
+  } else {
+    book.number--;
+    await book.save();
+    res.status(200).json({ num: book.number });
   }
-  book.number--;
-  await book.save();
-  res.status(200).json({ num: book.number });
 });
 
 module.exports = {
