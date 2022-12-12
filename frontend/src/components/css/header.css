@@ -1,0 +1,21 @@
+@import "./tags.css";
+
+.logo {
+  font-size: 40px;
+  color: #e8f92e;
+}
+
+.navigation, .center, .auth {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1em;
+  margin-right: 1em;
+  gap: 10px;
+}
+
+.auth h4 {
+  color: white;
+  font-size: 20px;
+}

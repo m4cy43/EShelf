@@ -1,0 +1,14 @@
+@import "../../components/css/tags.css";
+
+.login-box, .login-box form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-box {
+    background-color: #688eb1;
+    padding: 5px;
+    width: 25%;
+    margin: 0 auto;
+}
