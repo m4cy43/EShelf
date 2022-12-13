@@ -6,13 +6,15 @@ import "./css/form.css";
 
 function Register() {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
     password2: "",
+    name: "",
+    surname: "",
+    phone: "",
   });
 
-  const { name, email, password, password2 } = formData;
+  const { email, password, password2, name, surname, phone } = formData;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -46,11 +48,12 @@ function Register() {
       console.error('Passwords do not match')
     } else {
       const userData = {
-        name,
         email,
         password,
+        name,
+        surname,
+        phone,
       }
-
       dispatch(signup(userData))
     }
   }
@@ -88,7 +91,7 @@ function Register() {
             />
             <input
               type="text"
-              name="surnname"
+              name="surname"
               placeholder="Enter your surname"
               onChange={onChange}
             />

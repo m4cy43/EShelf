@@ -43,7 +43,7 @@ function Header() {
             <Link id="react-link" to="/login">
               <h4 onClick={onLogout}>LogOut</h4>
             </Link>
-            <h4>({user.name})</h4>
+            <h4>({user.email})</h4>
           </>
         ) : (
           <>

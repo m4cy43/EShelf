@@ -11,17 +11,22 @@ const initialState = {
   message: "",
 };
 
-export const signup = createAsyncThunk("auth/signup", async (user, thunkAPI) => {
-  try {
-    return await authService.signup(user);
-  } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
-    return thunkAPI.rejectWithValue(message);
+export const signup = createAsyncThunk(
+  "auth/signup",
+  async (user, thunkAPI) => {
+    try {
+      return await authService.signup(user);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
   }
-});
+);
 
 export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   try {
@@ -44,7 +49,6 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => {
-      //state.user = null;
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = false;
@@ -87,5 +91,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const {reset} = authSlice.actions; 
+export const { reset } = authSlice.actions;
 export default authSlice.reducer;

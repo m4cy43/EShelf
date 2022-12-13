@@ -1,7 +1,5 @@
 function Shelf() {
-  return (
-    <div>Shelf</div>
-  )
+  return <div>Shelf</div>;
 }
 
-export default Shelf
+export default Shelf;

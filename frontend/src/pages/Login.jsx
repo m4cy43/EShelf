@@ -44,9 +44,9 @@ function Login() {
     const userData = {
       email,
       password,
-    }
+    };
 
-    dispatch(login(userData))
+    dispatch(login(userData));
   };
 
   return (
