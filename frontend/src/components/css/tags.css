@@ -144,12 +144,32 @@ header {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  position: sticky;
 }
 
-input[type="text"] {
-    background-color: #d9d9d9;
+input {
+  background-color: #d9d9d9;
 }
 
 #react-link {
   text-decoration: none;
+}
+
+html,
+body,
+#root,
+.container {
+  height: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

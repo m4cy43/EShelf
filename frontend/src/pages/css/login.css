@@ -1,14 +1,32 @@
 @import "../../components/css/tags.css";
 
-.login-box, .login-box form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.login-box,
+.login-box form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: auto;
+  padding: 0px 35px 0px 35px;
 }
 
 .login-box {
-    background-color: #688eb1;
-    padding: 5px;
-    width: 25%;
-    margin: 0 auto;
+  background-color: #688eb1;
+  padding: 5px;
+  width: auto;
+  padding: 20px 0px 10px 0px;
+  margin: 0 auto;
+  border: 2px #17344f solid;
+}
+
+.login-box form input {
+  margin: 5px;
+  padding: 10px;
+  border: 2px #17344f solid;
+  width: 100%;
+}
+
+.login-box h4 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #e8f92e;
 }
