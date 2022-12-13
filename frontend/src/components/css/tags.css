@@ -173,3 +173,10 @@ main {
   justify-content: center;
   align-items: center;
 }
+
+h2 {
+  color: #17344f;
+  font-size: 2em;
+  margin: 10px;
+  text-decoration: underline;
+}
