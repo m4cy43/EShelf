@@ -24,7 +24,7 @@ function Header() {
         <IconContext.Provider value={{ color: "#e8f92e", size: "1.5em" }}>
           <FiMenu />
         </IconContext.Provider>
-        <input type="text" />
+        <input type="text" placeholder="Search..."/>
         <IconContext.Provider value={{ color: "#e8f92e", size: "1.5em" }}>
           <HiMagnifyingGlass />
         </IconContext.Provider>

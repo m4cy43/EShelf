@@ -1,0 +1,11 @@
+@import "../../components/css/tags.css";
+
+main {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.table-box {
+    width: 95%;
+}

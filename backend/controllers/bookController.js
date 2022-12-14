@@ -10,8 +10,25 @@ const { Op } = require("sequelize");
 // Private
 const getAllBooks = asyncHandler(async (req, res) => {
   const allBooks = await Book.findAll({
-    include: [{ model: Section }, { model: Author }, { model: Genre }],
-    order: [["UpdatedAt", "DESC"]],
+    include: [
+      { model: Section, attributes: ["sectionName"] },
+      {
+        model: Author,
+        attributes: ["name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+      {
+        model: Genre,
+        attributes: ["genreName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+    // order: [["UpdatedAt", "DESC"]],
+    attributes: ["number", "title", "year"],
   });
   res.status(200).json(allBooks);
 });
