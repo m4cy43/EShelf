@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllBooks, reset } from "../features/book/bookSlice";
+import { getAllBooks, resetBooks } from "../features/book/bookSlice";
 import TableLine from "../components/TableLine";
 import "./css/tables.css";
 
@@ -24,7 +24,7 @@ function Shelf() {
     dispatch(getAllBooks());
 
     return () => {
-      dispatch(reset());
+      dispatch(resetBooks());
     };
   }, [user, navigate, isError, message, dispatch]);
 
@@ -33,19 +33,19 @@ function Shelf() {
       <h2>Shelf</h2>
       <main>
         <div className="table-box">
-          <h5>Section</h5>
+          <h5>{books.length} books found</h5>
           <table>
             <tbody>
               <tr>
-                <th width="5%">Number</th>
-                <th width="30%">Title</th>
-                <th width="20%">Author</th>
-                <th width="5%">Year</th>
-                <th width="25%">Genres</th>
-                <th width="15%">Section</th>
+                <th>Num</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Year</th>
+                <th>Genres</th>
+                <th>Section</th>
               </tr>
               {books.map((book) => (
-                <TableLine book={book} />
+                <TableLine book={book} key={book.uuid}/>
               ))}
             </tbody>
           </table>

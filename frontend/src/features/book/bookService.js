@@ -7,8 +7,14 @@ const getAllBooks = async () => {
   return res.data;
 };
 
+const simpleFind = async (query) => {
+  const res = await axios.get(URL + `/find?title=${query}`);
+  return res.data;
+};
+
 const bookService = {
   getAllBooks,
+  simpleFind
 };
 
 export default bookService;

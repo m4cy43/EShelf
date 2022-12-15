@@ -27,8 +27,8 @@ const getAllBooks = asyncHandler(async (req, res) => {
         },
       },
     ],
-    // order: [["UpdatedAt", "DESC"]],
-    attributes: ["number", "title", "year"],
+    order: [["UpdatedAt", "DESC"]],
+    attributes: ["uuid", "number", "title", "year"],
   });
   res.status(200).json(allBooks);
 });
@@ -56,9 +56,26 @@ const getSimplyBooks = asyncHandler(async (req, res) => {
     throw new Error("Wrong query");
   }
   const books = await Book.findAll({
-    include: [{ model: Section }, { model: Author }, { model: Genre }],
+    include: [
+      { model: Section, attributes: ["sectionName"] },
+      {
+        model: Author,
+        attributes: ["name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+      {
+        model: Genre,
+        attributes: ["genreName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
     where: { title: { [Op.substring]: req.query.title } },
     order: [["UpdatedAt", "DESC"]],
+    attributes: ["uuid", "number", "title", "year"],
   });
   res.status(200).json(books);
 });

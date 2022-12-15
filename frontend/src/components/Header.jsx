@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { IconContext } from "react-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { reset, logout } from "../features/authentication/authSlice";
+import { simpleFind, resetBooks } from "../features/book/bookSlice";
 import "./css/header.css";
 
 function Header() {
@@ -18,15 +19,35 @@ function Header() {
     navigate("/");
   };
 
+  const { books, isError, message } = useSelector((state) => state.books);
+
+  const onSimpleFind = () => {
+    if (isError) {
+      console.log(message);
+    }
+
+    if (!user) {
+      navigate("/login");
+    }
+
+    let inputEl = document.getElementById("search");
+    dispatch(simpleFind(inputEl.value));
+    inputEl.value = "";
+
+    return () => {
+      dispatch(resetBooks());
+    };
+  };
+
   return (
     <header>
       <div className="navigation">
         <IconContext.Provider value={{ color: "#e8f92e", size: "1.5em" }}>
           <FiMenu />
         </IconContext.Provider>
-        <input type="text" placeholder="Search..."/>
+        <input id="search" type="text" placeholder="Search..." />
         <IconContext.Provider value={{ color: "#e8f92e", size: "1.5em" }}>
-          <HiMagnifyingGlass />
+          <HiMagnifyingGlass onClick={onSimpleFind} />
         </IconContext.Provider>
       </div>
       <div className="center">

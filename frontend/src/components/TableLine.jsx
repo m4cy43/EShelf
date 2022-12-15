@@ -1,18 +1,6 @@
 import "./css/tableline.css";
 
 function TableLine({ book }) {
-  let aline = [];
-  for (let el of book.authors) {
-    aline.push(`${el.surname} ${el.name} ${el.middlename}`);
-  }
-  let aresline = aline.join(", ");
-
-  let gline = [];
-  for (let el of book.genres) {
-    gline.push(el.genreName);
-  }
-  let gresline = gline.join(", ");
-
   return (
     <tr>
       <td>{book.number}</td>
