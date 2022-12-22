@@ -42,6 +42,8 @@ const createUser = asyncHandler(async (req, res) => {
       uuid: user.uuid,
       email: user.email,
       token: generateJWT(user.uuid),
+      isVerified: user.isVerified,
+      isAdmin: user.isAdmin,
     });
   } else {
     res.status(400);
@@ -63,6 +65,8 @@ const loginUser = asyncHandler(async (req, res) => {
       uuid: user.uuid,
       email: user.email,
       token: generateJWT(user.uuid),
+      isVerified: user.isVerified,
+      isAdmin: user.isAdmin,
     });
   } else {
     res.status(400);
@@ -119,6 +123,8 @@ const changeCred = asyncHandler(async (req, res) => {
       uuid: userToUpdate.uuid,
       email: userToUpdate.email,
       token: generateJWT(userToUpdate.uuid),
+      isVerified: user.isVerified,
+      isAdmin: user.isAdmin,
     });
   } else {
     res.status(400);
@@ -153,7 +159,9 @@ const verifyUser = asyncHandler(async (req, res) => {
   res.status(200).json({
     uuid: user.uuid,
     email: user.email,
+    token: generateJWT(userToUpdate.uuid),
     isVerified: user.isVerified,
+    isAdmin: user.isAdmin,
   });
 });
 
@@ -190,6 +198,8 @@ const setAdmin = asyncHandler(async (req, res) => {
   res.status(200).json({
     uuid: user.uuid,
     email: user.email,
+    token: generateJWT(userToUpdate.uuid),
+    isVerified: user.isVerified,
     isAdmin: user.isAdmin,
   });
 });

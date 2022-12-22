@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Debt = require("../models/debtModel");
 const Book = require("../models/bookModel");
+const Author = require("../models/authorModel");
 const { Op } = require("sequelize");
 
 // Get all users with debts
@@ -9,8 +10,20 @@ const { Op } = require("sequelize");
 // Private
 const getDebts = asyncHandler(async (req, res) => {
   const user = await User.findAll({
-    include: { model: Book },
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
     where: { "$books.debt.isDebted$": true },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
     order: [[Book, Debt, "updatedAt", "DESC"]],
   });
   // Check if auth user has admin rights
@@ -26,11 +39,52 @@ const getDebts = asyncHandler(async (req, res) => {
 // Private
 const getUserDebts = asyncHandler(async (req, res) => {
   const user = await User.findAll({
-    include: { model: Book },
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
     where: {
       [Op.and]: [{ "$books.debt.isDebted$": true }, { uuid: req.user.uuid }],
     },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
     order: [[Book, Debt, "updatedAt", "DESC"]],
+  });
+  res.status(200).json({ user });
+});
+
+// Get all users that booked the books
+// GET /api/debt/isdebted/:uuid
+// Private
+const bookIsDebted = asyncHandler(async (req, res) => {
+  const user = await User.findAll({
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
+    where: {
+      [Op.and]: [
+        { "$books.debt.isDebted$": true },
+        { uuid: req.user.uuid },
+        { "$books.uuid$": req.params.uuid },
+      ],
+    },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
   });
   res.status(200).json({ user });
 });
@@ -40,8 +94,20 @@ const getUserDebts = asyncHandler(async (req, res) => {
 // Private
 const getBooked = asyncHandler(async (req, res) => {
   const user = await User.findAll({
-    include: { model: Book },
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
     where: { "$books.debt.isBooked$": true },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
     order: [[Book, Debt, "updatedAt", "DESC"]],
   });
   // Check if auth user has admin rights
@@ -57,11 +123,52 @@ const getBooked = asyncHandler(async (req, res) => {
 // Private
 const getUserBookings = asyncHandler(async (req, res) => {
   const user = await User.findAll({
-    include: { model: Book },
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
     where: {
       [Op.and]: [{ "$books.debt.isBooked$": true }, { uuid: req.user.uuid }],
     },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
     order: [[Book, Debt, "updatedAt", "DESC"]],
+  });
+  res.status(200).json({ user });
+});
+
+// Get all users that booked the books
+// GET /api/debt/isbooked/:uuid
+// Private
+const bookIsBooked = asyncHandler(async (req, res) => {
+  const user = await User.findAll({
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
+    where: {
+      [Op.and]: [
+        { "$books.debt.isBooked$": true },
+        { uuid: req.user.uuid },
+        { "$books.uuid$": req.params.uuid },
+      ],
+    },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
   });
   res.status(200).json({ user });
 });
@@ -229,4 +336,6 @@ module.exports = {
   deleteUserDebt,
   deleteBooking,
   deleteBookingAdm,
+  bookIsDebted,
+  bookIsBooked,
 };

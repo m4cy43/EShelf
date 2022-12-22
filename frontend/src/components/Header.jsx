@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { FaSignInAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { FiMenu } from "react-icons/fi";
@@ -5,10 +6,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { IconContext } from "react-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { reset, logout } from "../features/authentication/authSlice";
-import { simpleFind, resetBooks } from "../features/book/bookSlice";
+import {
+  simpleFind,
+  advancedFind,
+  resetBooks,
+} from "../features/book/bookSlice";
 import "./css/header.css";
 
 function Header() {
+  const [searchData, setSearchData] = useState({
+    title: "_",
+    author: "_",
+    year: "_",
+    genre: "_",
+    section: "_",
+  });
+
+  const { title, author, year, genre, section } = searchData;
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -39,12 +54,90 @@ function Header() {
     };
   };
 
+  const onChange = (e) => {
+    setSearchData((previousState) => ({
+      ...previousState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const advancedSearch = (e) => {
+    e.preventDefault();
+
+    const advancedSearchData = {
+      title,
+      author,
+      year,
+      genre,
+      section,
+    };
+    dispatch(advancedFind(advancedSearchData));
+
+    let inputEl = document.getElementsByTagName("input");
+    for (let el of inputEl) {
+      el.value = "";
+    }
+
+    setSearchData((previousState) => ({
+      title: "_",
+      author: "_",
+      year: "_",
+      genre: "_",
+      section: "_",
+    }));
+
+    return () => {
+      dispatch(resetBooks());
+    };
+  };
+
   return (
     <header>
       <div className="navigation">
-        <IconContext.Provider value={{ color: "#e8f92e", size: "1.5em" }}>
-          <FiMenu />
-        </IconContext.Provider>
+        <div className="drop-menu">
+          <IconContext.Provider value={{ color: "#e8f92e", size: "1.5em" }}>
+            <FiMenu className="search-menu" />
+          </IconContext.Provider>
+          <div className="advanced-search-box">
+            <h4>Advanced search</h4>
+            <input
+              type="text"
+              name="title"
+              placeholder="Title..."
+              onChange={onChange}
+            />
+            <input
+              type="text"
+              name="author"
+              placeholder="Author surname..."
+              onChange={onChange}
+            />
+            <input
+              type="text"
+              name="year"
+              placeholder="Year..."
+              onChange={onChange}
+            />
+            <input
+              type="text"
+              name="genre"
+              placeholder="Genre..."
+              onChange={onChange}
+            />
+            <input
+              type="text"
+              name="section"
+              placeholder="Section..."
+              onChange={onChange}
+            />
+            <input
+              type="submit"
+              name="button"
+              value="Search"
+              onClick={advancedSearch}
+            />
+          </div>
+        </div>
         <input id="search" type="text" placeholder="Search..." />
         <IconContext.Provider value={{ color: "#e8f92e", size: "1.5em" }}>
           <HiMagnifyingGlass onClick={onSimpleFind} />

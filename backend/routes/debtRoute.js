@@ -10,6 +10,8 @@ const {
   deleteUserDebt,
   deleteBooking,
   deleteBookingAdm,
+  bookIsBooked,
+  bookIsDebted
 } = require("../controllers/debtController");
 
 // Auth middleware
@@ -38,5 +40,10 @@ router.get("/authbook", authProtection, getUserBookings);
 router.post("/book/:uuid", authProtection, bookTheBook);
 // DELETE /api/debt/delbook/{uuid}
 router.delete("/delbook/:uuid", authProtection, deleteBooking);
+
+// GET /api/debt/isbooked/:uuid
+router.get("/isbooked/:uuid", authProtection, bookIsBooked);
+// GET //api/debt/isdebted/:uuid
+router.get("/isdebted/:uuid", authProtection, bookIsDebted);
 
 module.exports = router;

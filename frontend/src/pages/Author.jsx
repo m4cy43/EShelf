@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllBooks, resetBooks } from "../features/book/bookSlice";
+import { getAuthorBooks, resetBooks } from "../features/book/bookSlice";
 import Spinner from "../components/Spinner";
-import TableLine from "../components/TableLine";
+import AuthorTableLine from "../components/AuthorTableLine";
 import "./css/tables.css";
 
-function Shelf() {
+function Author() {
+  const { uuid } = useParams();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -24,7 +26,7 @@ function Shelf() {
       navigate("/login");
     }
 
-    dispatch(getAllBooks());
+    dispatch(getAuthorBooks(uuid));
 
     return () => {
       dispatch(resetBooks());
@@ -37,7 +39,7 @@ function Shelf() {
 
   return (
     <>
-      <h2>Shelf</h2>
+      <h2>{books[0].authors[0].surname} {books[0].authors[0].name} {books[0].authors[0].middlename}</h2>
       <main>
         <div className="table-box">
           <h5>{books.length} books found</h5>
@@ -46,19 +48,17 @@ function Shelf() {
               <tr>
                 <th>Num</th>
                 <th>Title</th>
-                <th>Author</th>
                 <th>Year</th>
                 <th>Genres</th>
                 <th>Section</th>
               </tr>
               {books ? (
-                books.map((book) => <TableLine book={book} key={book.uuid} />)
+                books.map((book) => <AuthorTableLine book={book} key={book.uuid} />)
               ) : (
-                <TableLine
+                <AuthorTableLine
                   book={{
                     number: "",
                     title: "",
-                    authors: [{ name: "", surname: "", middlename: "" }],
                     year: "",
                     genres: [{ genreName: "" }],
                     section: { sectionName: "" },
@@ -74,4 +74,4 @@ function Shelf() {
   );
 }
 
-export default Shelf;
+export default Author;

@@ -1,9 +1,5 @@
 @import "../../components/css/tags.css";
 
-main {
-    justify-content: flex-start;
-}
-
 .table-box {
     width: 95%;
 }

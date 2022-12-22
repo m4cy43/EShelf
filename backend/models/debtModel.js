@@ -18,7 +18,7 @@ const Debt = db.define(
       defaultValue: false,
     },
     isDebted: {
-      type: DataTypes.STRING,
+      type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
     },

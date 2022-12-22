@@ -2,56 +2,25 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import bookService from "./bookService";
 
 const initialState = {
-  books: [
+  debts: [
     {
-      uuid: "",
-      number: 0,
-      title: "",
-      year: 0,
-      section: {
-        uuid: "",
-        sectionName: "",
-      },
-      authors: [
+      user: [
         {
-          uuid: "",
-          name: "",
-          surname: "",
-          middlename: "",
-        },
-      ],
-      genres: [
-        {
-          uuid: "",
-          genreName: "",
-        },
-      ],
+            books: [{uuid: "",
+            title: "",
+            year: 0,
+            authors: [
+              {
+                uuid: "",
+                name: "",
+                surname: "",
+                middlename: "",
+              },
+            ],}]
+        }
+      ]
     },
   ],
-  book: {
-    uuid: "",
-    number: 0,
-    title: "",
-    year: 0,
-    section: {
-      uuid: "",
-      sectionName: "",
-    },
-    authors: [
-      {
-        uuid: "",
-        name: "",
-        surname: "",
-        middlename: "",
-      },
-    ],
-    genres: [
-      {
-        uuid: "",
-        genreName: "",
-      },
-    ],
-  },
   isError: false,
   isSuccess: false,
   isLoading: false,

@@ -11,17 +11,17 @@ const { Op } = require("sequelize");
 const getAllBooks = asyncHandler(async (req, res) => {
   const allBooks = await Book.findAll({
     include: [
-      { model: Section, attributes: ["sectionName"] },
+      { model: Section, attributes: ["uuid", "sectionName"] },
       {
         model: Author,
-        attributes: ["name", "surname", "middlename"],
+        attributes: ["uuid", "name", "surname", "middlename"],
         through: {
           attributes: [],
         },
       },
       {
         model: Genre,
-        attributes: ["genreName"],
+        attributes: ["uuid", "genreName"],
         through: {
           attributes: [],
         },
@@ -42,7 +42,24 @@ const getBookByUuid = asyncHandler(async (req, res) => {
     throw new Error("Wrong query");
   }
   const theBook = await Book.findByPk(req.params.uuid, {
-    include: [{ model: Section }, { model: Author }, { model: Genre }],
+    include: [
+      { model: Section, attributes: ["uuid", "sectionName"] },
+      {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+      {
+        model: Genre,
+        attributes: ["uuid", "genreName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+    attributes: ["uuid", "number", "title", "year", "description"],
   });
   res.status(200).json(theBook);
 });
@@ -57,17 +74,17 @@ const getSimplyBooks = asyncHandler(async (req, res) => {
   }
   const books = await Book.findAll({
     include: [
-      { model: Section, attributes: ["sectionName"] },
+      { model: Section, attributes: ["uuid", "sectionName"] },
       {
         model: Author,
-        attributes: ["name", "surname", "middlename"],
+        attributes: ["uuid", "name", "surname", "middlename"],
         through: {
           attributes: [],
         },
       },
       {
         model: Genre,
-        attributes: ["genreName"],
+        attributes: ["uuid", "genreName"],
         through: {
           attributes: [],
         },
@@ -90,7 +107,23 @@ const getRecursivelyBooks = asyncHandler(async (req, res) => {
     throw new Error("Wrong query");
   }
   const books = await Book.findAll({
-    include: [{ model: Section }, { model: Author }, { model: Genre }],
+    include: [
+      { model: Section, attributes: [] },
+      {
+        model: Author,
+        attributes: [],
+        through: {
+          attributes: [],
+        },
+      },
+      {
+        model: Genre,
+        attributes: [],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
     where: {
       title: { [Op.substring]: title },
       "$authors.surname$": { [Op.substring]: author },
@@ -99,8 +132,33 @@ const getRecursivelyBooks = asyncHandler(async (req, res) => {
       "$section.sectionName$": { [Op.substring]: section },
     },
     order: [["UpdatedAt", "DESC"]],
+    attributes: ["uuid", "number", "title", "year"],
   });
-  res.status(200).json(books);
+  let fullbooks = [];
+  for (let el of books) {
+    let pkbook = await Book.findByPk(el.uuid, {
+      include: [
+        { model: Section, attributes: ["uuid", "sectionName"] },
+        {
+          model: Author,
+          attributes: ["uuid", "name", "surname", "middlename"],
+          through: {
+            attributes: [],
+          },
+        },
+        {
+          model: Genre,
+          attributes: ["uuid", "genreName"],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+      attributes: ["uuid", "number", "title", "year"],
+    });
+    await fullbooks.push(pkbook);
+  }
+  res.status(200).json(fullbooks);
 });
 
 // Get all author's book
@@ -108,11 +166,28 @@ const getRecursivelyBooks = asyncHandler(async (req, res) => {
 // Private
 const getAuthorsBooks = asyncHandler(async (req, res) => {
   const books = await Book.findAll({
-    include: [{ model: Section }, { model: Author }, { model: Genre }],
+    include: [
+      { model: Section, attributes: ["uuid", "sectionName"] },
+      {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+      {
+        model: Genre,
+        attributes: ["uuid", "genreName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
     where: {
       "$authors.uuid$": req.params.uuid,
     },
     order: [["UpdatedAt", "DESC"]],
+    attributes: ["uuid", "number", "title", "year"],
   });
   if (!books) {
     res.status(400);
