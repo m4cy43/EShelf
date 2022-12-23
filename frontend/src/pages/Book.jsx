@@ -4,6 +4,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { oneBook, resetBooks } from "../features/book/bookSlice";
 import Spinner from "../components/Spinner";
 import "./css/book.css";
+import {
+  getAllDebts,
+  oneBookDebt,
+  resetDebts,
+} from "../features/debt/debtSlice";
 
 function Book() {
   const { uuid } = useParams();
@@ -15,6 +20,7 @@ function Book() {
   const { book, isLoading, isError, message } = useSelector(
     (state) => state.books
   );
+  const { debts } = useSelector((state) => state.debts);
 
   useEffect(() => {
     if (isError) {
@@ -24,10 +30,12 @@ function Book() {
     if (!user) {
       navigate("/login");
     }
-
+    
+    dispatch(oneBookDebt(uuid));
     dispatch(oneBook(uuid));
 
     return () => {
+      dispatch(resetDebts());
       dispatch(resetBooks());
     };
   }, [user, navigate, isError, message, dispatch]);
@@ -35,6 +43,10 @@ function Book() {
   if (isLoading) {
     return <Spinner />;
   }
+
+  const getDebt = () => {
+    console.log(debts);
+  };
 
   return (
     <>
@@ -53,7 +65,7 @@ function Book() {
               <span>Authors: </span>
               {book.authors.map((el) => {
                 return (
-                  <Link to={`../author/${el.uuid}`}>
+                  <Link to={`../author/${el.uuid}`} key={el.uuid}>
                     {el.surname} {el.name} {el.middlename}
                   </Link>
                 );
@@ -65,7 +77,7 @@ function Book() {
             <h6>
               <span>Genres:</span>{" "}
               {book.genres.map((el) => {
-                return <a>{el.genreName}</a>;
+                return <a key={el.uuid}>{el.genreName}</a>;
               })}
             </h6>
             <h6>
@@ -74,11 +86,27 @@ function Book() {
           </div>
           <div className="book-bottom-panel">
             {user.isAdmin ? (
-              <input type="submit" value="Delete the book" />
+              <input type="submit" value="Delete the book" onClick={getDebt} />
             ) : user.isVerified ? (
-              <input type="submit" value="Take the book" />
+              debts.user[0] ? (
+                debts.user[0].books[0].debt.isBooked? (
+                  <input
+                    type="submit"
+                    value="The book is booked"
+                    onClick={getDebt}
+                  />
+                ) : (
+                  <input
+                    type="submit"
+                    value="The book is debted"
+                    onClick={getDebt}
+                  />
+                )
+              ) : (
+                <input type="submit" value="Take the book" onClick={getDebt} />
+              )
             ) : (
-              <input type="submit" value="Account not verified" />
+              <input type="submit" value="Authorize first" onClick={getDebt} />
             )}
           </div>
         </div>

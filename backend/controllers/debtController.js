@@ -61,35 +61,6 @@ const getUserDebts = asyncHandler(async (req, res) => {
 });
 
 // Get all users that booked the books
-// GET /api/debt/isdebted/:uuid
-// Private
-const bookIsDebted = asyncHandler(async (req, res) => {
-  const user = await User.findAll({
-    include: {
-      model: Book,
-      attributes: ["uuid", "title", "year"],
-      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
-      include: {
-        model: Author,
-        attributes: ["uuid", "name", "surname", "middlename"],
-        through: {
-          attributes: [],
-        },
-      },
-    },
-    where: {
-      [Op.and]: [
-        { "$books.debt.isDebted$": true },
-        { uuid: req.user.uuid },
-        { "$books.uuid$": req.params.uuid },
-      ],
-    },
-    attributes: ["uuid", "email", "name", "surname", "phone"],
-  });
-  res.status(200).json({ user });
-});
-
-// Get all users that booked the books
 // GET /api/debt/book
 // Private
 const getBooked = asyncHandler(async (req, res) => {
@@ -145,9 +116,9 @@ const getUserBookings = asyncHandler(async (req, res) => {
 });
 
 // Get all users that booked the books
-// GET /api/debt/isbooked/:uuid
+// GET /api/debt/onebook/:uuid
 // Private
-const bookIsBooked = asyncHandler(async (req, res) => {
+const oneBookDebt = asyncHandler(async (req, res) => {
   const user = await User.findAll({
     include: {
       model: Book,
@@ -163,7 +134,6 @@ const bookIsBooked = asyncHandler(async (req, res) => {
     },
     where: {
       [Op.and]: [
-        { "$books.debt.isBooked$": true },
         { uuid: req.user.uuid },
         { "$books.uuid$": req.params.uuid },
       ],
@@ -336,6 +306,5 @@ module.exports = {
   deleteUserDebt,
   deleteBooking,
   deleteBookingAdm,
-  bookIsDebted,
-  bookIsBooked,
+  oneBookDebt,
 };

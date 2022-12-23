@@ -1,54 +1,52 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import bookService from "./bookService";
+import debtService from "./debtService";
 
 const initialState = {
-  debts: [
+  debts:
     {
       user: [
         {
-            books: [{uuid: "",
-            title: "",
-            year: 0,
-            authors: [
-              {
+          uuid: "",
+          email: "",
+          name: "",
+          surname: "",
+          phone: "",
+          books: [
+            {
+              uuid: "",
+              title: "",
+              year: 0,
+              authors: [
+                {
+                  uuid: "",
+                  name: "",
+                  surname: "",
+                  middlename: "",
+                },
+              ],
+              debt: {
                 uuid: "",
-                name: "",
-                surname: "",
-                middlename: "",
+                isBooked: false,
+                isDebted: "",
+                deadlineDate: "",
               },
-            ],}]
-        }
-      ]
+            },
+          ],
+        },
+      ],
     },
-  ],
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: "",
 };
 
-export const getAllBooks = createAsyncThunk(
-  "books/getAllBooks",
-  async (_, thunkAPI) => {
-    try {
-      return await bookService.getAllBooks();
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
-
-export const simpleFind = createAsyncThunk(
-  "books/simpleFind",
+export const getAllDebts = createAsyncThunk(
+  "debts/getAllDebts",
   async (query, thunkAPI) => {
     try {
-      return await bookService.simpleFind(query);
+      const token = thunkAPI.getState().auth.user.token;
+      return await debtService.getAllDebts(query, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -61,11 +59,12 @@ export const simpleFind = createAsyncThunk(
   }
 );
 
-export const advancedFind = createAsyncThunk(
-  "books/advancedFind",
+export const oneBookDebt = createAsyncThunk(
+  "debts/oneBookDebt",
   async (query, thunkAPI) => {
     try {
-      return await bookService.advancedFind(query);
+      const token = thunkAPI.getState().auth.user.token;
+      return await debtService.oneBookDebt(query, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -78,109 +77,36 @@ export const advancedFind = createAsyncThunk(
   }
 );
 
-export const oneBook = createAsyncThunk(
-  "books/oneBook",
-  async (query, thunkAPI) => {
-    try {
-      return await bookService.oneBook(query);
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
-
-export const getAuthorBooks = createAsyncThunk(
-  "books/getAuthorBooks",
-  async (query, thunkAPI) => {
-    try {
-      return await bookService.getAuthorBooks(query);
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
-
-export const bookSlice = createSlice({
-  name: "books",
+export const debtSlice = createSlice({
+  name: "debts",
   initialState,
   reducers: {
-    resetBooks: (state) => initialState,
+    resetDebts: (state) => initialState,
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getAllBooks.pending, (state) => {
+      .addCase(getAllDebts.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getAllBooks.fulfilled, (state, action) => {
+      .addCase(getAllDebts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.books = action.payload;
+        state.debts = action.payload;
       })
-      .addCase(getAllBooks.rejected, (state, action) => {
+      .addCase(getAllDebts.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
       })
-      .addCase(simpleFind.pending, (state) => {
+      .addCase(oneBookDebt.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(simpleFind.fulfilled, (state, action) => {
+      .addCase(oneBookDebt.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.books = action.payload;
+        state.debts = action.payload;
       })
-      .addCase(simpleFind.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload;
-      })
-      .addCase(advancedFind.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(advancedFind.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.books = action.payload;
-      })
-      .addCase(advancedFind.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload;
-      })
-      .addCase(oneBook.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(oneBook.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.book = action.payload;
-      })
-      .addCase(oneBook.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload;
-      })
-      .addCase(getAuthorBooks.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getAuthorBooks.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.books = action.payload;
-      })
-      .addCase(getAuthorBooks.rejected, (state, action) => {
+      .addCase(oneBookDebt.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -188,5 +114,5 @@ export const bookSlice = createSlice({
   },
 });
 
-export const { resetBooks } = bookSlice.actions;
-export default bookSlice.reducer;
+export const { resetDebts } = debtSlice.actions;
+export default debtSlice.reducer;
