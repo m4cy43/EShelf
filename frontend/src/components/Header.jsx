@@ -149,7 +149,7 @@ function Header() {
         </Link>
       </div>
       <div className="auth">
-        {user ? (
+        {(user && user.uuid !== "") ? (
           <>
             <IconContext.Provider value={{ color: "#e8f92e", size: "1em" }}>
               <FaSignOutAlt />

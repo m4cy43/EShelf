@@ -24,7 +24,7 @@ function Login() {
       console.error(message);
     }
 
-    if (isSuccess || user) {
+    if (isSuccess || (user && user.uuid !== "")) {
       navigate("/");
     }
 

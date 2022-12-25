@@ -34,12 +34,23 @@ const getAuthorBooks = async (query) => {
   return res.data;
 };
 
+const deleteBook = async (query, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.delete(URL + `one/${query}`, config);
+  return res.data;
+};
+
 const bookService = {
   getAllBooks,
   simpleFind,
   advancedFind,
   oneBook,
-  getAuthorBooks
+  getAuthorBooks,
+  deleteBook,
 };
 
 export default bookService;

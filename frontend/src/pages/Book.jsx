@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { oneBook, resetBooks } from "../features/book/bookSlice";
+import { deleteBook, oneBook, resetBooks } from "../features/book/bookSlice";
 import Spinner from "../components/Spinner";
 import "./css/book.css";
 import {
+  bookTheBook,
   getAllDebts,
   oneBookDebt,
   resetDebts,
+  unbookTheBook,
 } from "../features/debt/debtSlice";
 
 function Book() {
@@ -30,7 +32,7 @@ function Book() {
     if (!user) {
       navigate("/login");
     }
-    
+
     dispatch(oneBookDebt(uuid));
     dispatch(oneBook(uuid));
 
@@ -44,8 +46,26 @@ function Book() {
     return <Spinner />;
   }
 
-  const getDebt = () => {
-    console.log(debts);
+  const delTheBook = () => {
+    navigate("/");
+    dispatch(deleteBook(uuid));
+    return () => {
+      dispatch(resetBooks());
+    };
+  };
+
+  const takeBook = () => {
+    dispatch(bookTheBook(uuid));
+    return () => {
+      dispatch(resetDebts());
+    };
+  };
+
+  const unBook = () => {
+    dispatch(unbookTheBook(uuid));
+    return () => {
+      dispatch(resetDebts());
+    };
   };
 
   return (
@@ -86,27 +106,27 @@ function Book() {
           </div>
           <div className="book-bottom-panel">
             {user.isAdmin ? (
-              <input type="submit" value="Delete the book" onClick={getDebt} />
+              <input
+                type="submit"
+                value="Delete the book"
+                onClick={delTheBook}
+              />
             ) : user.isVerified ? (
               debts.user[0] ? (
-                debts.user[0].books[0].debt.isBooked? (
+                debts.user[0].books[0].debt.isBooked ? (
                   <input
                     type="submit"
                     value="The book is booked"
-                    onClick={getDebt}
+                    onClick={unBook}
                   />
                 ) : (
-                  <input
-                    type="submit"
-                    value="The book is debted"
-                    onClick={getDebt}
-                  />
+                  <input type="submit" value="The book is debted" />
                 )
               ) : (
-                <input type="submit" value="Take the book" onClick={getDebt} />
+                <input type="submit" value="Take the book" onClick={takeBook} />
               )
             ) : (
-              <input type="submit" value="Authorize first" onClick={getDebt} />
+              <input type="submit" value="Authorize first" />
             )}
           </div>
         </div>

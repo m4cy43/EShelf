@@ -133,10 +133,7 @@ const oneBookDebt = asyncHandler(async (req, res) => {
       },
     },
     where: {
-      [Op.and]: [
-        { uuid: req.user.uuid },
-        { "$books.uuid$": req.params.uuid },
-      ],
+      [Op.and]: [{ uuid: req.user.uuid }, { "$books.uuid$": req.params.uuid }],
     },
     attributes: ["uuid", "email", "name", "surname", "phone"],
   });
@@ -158,25 +155,44 @@ const bookTheBook = asyncHandler(async (req, res) => {
     throw new Error("There is no such book");
   }
   await user.addBook(book);
-  let fromDebt = await Debt.findOne({
+  let debts = await Debt.findOne({
     where: {
       [Op.and]: [{ userUuid: user.uuid }, { bookUuid: req.params.uuid }],
     },
   });
-  fromDebt.isBooked = true;
-  let datetochange = new Date(fromDebt.deadlineDate);
+  debts.isBooked = true;
+  let datetochange = new Date(debts.deadlineDate);
   datetochange.setDate(datetochange.getDate() + 7);
-  fromDebt.deadlineDate = datetochange;
-  await fromDebt.save();
-  res.status(200).json({ fromDebt });
+  debts.deadlineDate = datetochange;
+  await debts.save();
+
+  user = await User.findAll({
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
+    where: {
+      [Op.and]: [{ uuid: req.user.uuid }, { "$books.uuid$": req.params.uuid }],
+    },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
+  });
+  res.status(200).json({ user });
 });
 
 // Change from Booked to Debted
 // PUT /api/debt?user=_&book=_
 // Private
 const debtTheBook = asyncHandler(async (req, res) => {
-  const { user, book } = req.query;
-  if (!user || !book) {
+  const { userq, bookq } = req.query;
+  if (!userq || !bookq) {
     res.status(400);
     throw new Error("Wrong query");
   }
@@ -185,14 +201,14 @@ const debtTheBook = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Unauthorized");
   }
-  let changeNumber = await Book.findByPk(book);
+  let changeNumber = await Book.findByPk(bookq);
   if (changeNumber.number == 0) {
     res.status(418);
     throw new Error("No available books");
   }
   let booked = await Debt.findOne({
     where: {
-      [Op.and]: [{ userUuid: user }, { bookUuid: book }],
+      [Op.and]: [{ userUuid: userq }, { bookUuid: bookq }],
     },
   });
   if (!booked) {
@@ -212,15 +228,34 @@ const debtTheBook = asyncHandler(async (req, res) => {
   changeNumber.debtedNumber++;
   changeNumber.number--;
   changeNumber.save();
-  res.status(200).json({ booked });
+
+  const user = await User.findAll({
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
+    where: {
+      [Op.and]: [{ uuid: userq }, { "$books.uuid$": bookq }],
+    },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
+  });
+  res.status(200).json({ user });
 });
 
 // Delete users debts
 // DELETE api/debt?user=_&book=_
 // Private
 const deleteUserDebt = asyncHandler(async (req, res) => {
-  const { user, book } = req.query;
-  if (!user || !book) {
+  const { userq, bookq } = req.query;
+  if (!userq || !bookq) {
     res.status(400);
     throw new Error("Wrong query");
   }
@@ -231,7 +266,7 @@ const deleteUserDebt = asyncHandler(async (req, res) => {
   }
   let debt = await Debt.findOne({
     where: {
-      [Op.and]: [{ userUuid: user }, { bookUuid: book }],
+      [Op.and]: [{ userUuid: userq }, { bookUuid: bookq }],
     },
   });
   if (!debt) {
@@ -247,36 +282,74 @@ const deleteUserDebt = asyncHandler(async (req, res) => {
   changeNumber.debtedNumber--;
   changeNumber.number++;
   await changeNumber.save();
-  res.status(200).json({ uuid: req.params.uuid });
+
+  const user = await User.findAll({
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
+    where: {
+      [Op.and]: [{ uuid: userq }, { "$books.uuid$": bookq }],
+    },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
+  });
+  res.status(200).json({ user });
 });
 
 // Delete user booking
 // DELETE /api/debt/delbook/{uuid}
 // Private
 const deleteBooking = asyncHandler(async (req, res) => {
-  const user = req.user.uuid;
-  const book = req.params.uuid;
-  if (!user || !book) {
+  const userq = req.user.uuid;
+  const bookq = req.params.uuid;
+  if (!userq || !bookq) {
     res.status(400);
     throw new Error("Wrong query");
   }
   let booking = await Debt.findOne({
-    where: { [Op.and]: [{ userUuid: user }, { bookUuid: book }] },
+    where: { [Op.and]: [{ userUuid: userq }, { bookUuid: bookq }] },
   });
   if (!booking || !booking.isBooked || booking.isDebted == 1) {
     res.status(400);
     throw new Error("No booking or the book is debted");
   }
   await booking.destroy();
-  res.status(200).json({ user: booking.userUuid, book: booking.bookUuid });
+
+  const user = await User.findAll({
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
+    where: {
+      [Op.and]: [{ uuid: req.user.uuid }, { "$books.uuid$": req.params.uuid }],
+    },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
+  });
+  res.status(200).json({ user });
 });
 
 // Delete user booking (adm)
 // DELETE /api/debt/book?user=_&book=_
 // Private
 const deleteBookingAdm = asyncHandler(async (req, res) => {
-  const { user, book } = req.query;
-  if (!user || !book) {
+  const { userq, bookq } = req.query;
+  if (!userq || !bookq) {
     res.status(400);
     throw new Error("Wrong query");
   }
@@ -286,14 +359,33 @@ const deleteBookingAdm = asyncHandler(async (req, res) => {
     throw new Error("Unauthorized");
   }
   let booking = await Debt.findOne({
-    where: { [Op.and]: [{ userUuid: user }, { bookUuid: book }] },
+    where: { [Op.and]: [{ userUuid: userq }, { bookUuid: bookq }] },
   });
   if (!booking || !booking.isBooked || booking.isDebted == 1) {
     res.status(400);
     throw new Error("No booking or the book is debted");
   }
   await booking.destroy();
-  res.status(200).json({ user: booking.userUuid, book: booking.bookUuid });
+
+  const user = await User.findAll({
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
+    where: {
+      [Op.and]: [{ uuid: userq }, { "$books.uuid$": bookq }],
+    },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
+  });
+  res.status(200).json({ user });
 });
 
 module.exports = {

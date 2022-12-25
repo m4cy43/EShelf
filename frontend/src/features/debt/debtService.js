@@ -22,6 +22,31 @@ const oneBookDebt = async (query, token) => {
   return res.data;
 };
 
-const debtService = { getAllDebts, oneBookDebt };
+const bookTheBook = async (query, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.post(URL + `book/${query}`, {}, config);
+  return res.data;
+};
+
+const unbookTheBook = async (query, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.delete(URL + `delbook/${query}`, config);
+  return res.data;
+};
+
+const debtService = {
+  getAllDebts,
+  oneBookDebt,
+  bookTheBook,
+  unbookTheBook,
+};
 
 export default debtService;
