@@ -16,6 +16,9 @@ const authProtection = require("../middleware/authMiddleware");
 router.route("/").get(getAllSections).post(authProtection, createSection);
 // PUT /api/section/{uuid}
 // DELETE /api/section/{uuid}
-router.route("/:uuid").put(authProtection, updateSection).delete(authProtection, deleteSection);
+router
+  .route("/:uuid")
+  .put(authProtection, updateSection)
+  .delete(authProtection, deleteSection);
 
 module.exports = router;

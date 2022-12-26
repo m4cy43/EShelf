@@ -116,6 +116,32 @@ const getUserBookings = asyncHandler(async (req, res) => {
 });
 
 // Get all users that booked the books
+// GET /api/debt/both
+// Private
+const getUsersBoth = asyncHandler(async (req, res) => {
+  const user = await User.findAll({
+    include: {
+      model: Book,
+      attributes: ["uuid", "title", "year"],
+      through: { attributes: ["uuid", "isBooked", "isDebted", "deadlineDate"] },
+      include: {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+    },
+    where: {
+      [Op.and]: [{ uuid: req.user.uuid }],
+    },
+    attributes: ["uuid", "email", "name", "surname", "phone"],
+    order: [[Book, Debt, "updatedAt", "DESC"]],
+  });
+  res.status(200).json({ user });
+});
+
+// Get all users that booked the books
 // GET /api/debt/onebook/:uuid
 // Private
 const oneBookDebt = asyncHandler(async (req, res) => {
@@ -399,4 +425,5 @@ module.exports = {
   deleteBooking,
   deleteBookingAdm,
   oneBookDebt,
+  getUsersBoth,
 };

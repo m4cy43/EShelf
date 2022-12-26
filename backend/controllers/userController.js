@@ -2,9 +2,6 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
-const Debt = require("../models/debtModel");
-const Book = require("../models/bookModel");
-const { Op } = require("sequelize");
 
 // Create new user
 // POST /api/user/signup
@@ -41,6 +38,7 @@ const createUser = asyncHandler(async (req, res) => {
     res.status(201).json({
       uuid: user.uuid,
       email: user.email,
+      phone: user.phone,
       token: generateJWT(user.uuid),
       isVerified: user.isVerified,
       isAdmin: user.isAdmin,
@@ -64,6 +62,7 @@ const loginUser = asyncHandler(async (req, res) => {
     res.json({
       uuid: user.uuid,
       email: user.email,
+      phone: user.phone,
       token: generateJWT(user.uuid),
       isVerified: user.isVerified,
       isAdmin: user.isAdmin,
@@ -122,6 +121,7 @@ const changeCred = asyncHandler(async (req, res) => {
     res.status(201).json({
       uuid: userToUpdate.uuid,
       email: userToUpdate.email,
+      phone: user.phone,
       token: generateJWT(userToUpdate.uuid),
       isVerified: user.isVerified,
       isAdmin: user.isAdmin,
@@ -159,6 +159,7 @@ const verifyUser = asyncHandler(async (req, res) => {
   res.status(200).json({
     uuid: user.uuid,
     email: user.email,
+    phone: user.phone,
     token: generateJWT(userToUpdate.uuid),
     isVerified: user.isVerified,
     isAdmin: user.isAdmin,
@@ -198,36 +199,11 @@ const setAdmin = asyncHandler(async (req, res) => {
   res.status(200).json({
     uuid: user.uuid,
     email: user.email,
+    phone: user.phone,
     token: generateJWT(userToUpdate.uuid),
     isVerified: user.isVerified,
     isAdmin: user.isAdmin,
   });
-});
-
-// Create the superadmin
-// PUT /api/user/sadm
-// Private
-const setSAdmin = asyncHandler(async (req, res) => {
-  let sadmin = await User.findOne({
-    where: { email: "superadmin@eshelf.adm" },
-  });
-  if (!sadmin) {
-    res.status(401);
-    throw new Error("There is no superadmin account yet");
-  }
-  if (sadmin.isAdmin) {
-    res.status(418);
-    throw new Error("Already admin");
-  }
-  // Check if auth user has superadmin rights
-  if (req.user.email !== "superadmin@eshelf.adm") {
-    res.status(401);
-    throw new Error("Unauthorized");
-  }
-  sadmin.isAdmin = true;
-  sadmin.isVerified = true;
-  await sadmin.save();
-  res.status(200).json({ sadmin });
 });
 
 // Get all unverified users
@@ -259,6 +235,5 @@ module.exports = {
   changeCred,
   verifyUser,
   setAdmin,
-  setSAdmin,
   getUnverified,
 };

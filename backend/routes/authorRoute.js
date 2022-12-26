@@ -16,6 +16,9 @@ const authProtection = require("../middleware/authMiddleware");
 router.route("/").get(getAllAuthors).post(authProtection, createAuthor);
 // PUT /api/author/{uuid}
 // DELETE /api/author/{uuid}
-router.route("/:uuid").put(authProtection, updateAuthor).delete(authProtection, deleteAuthor);
+router
+  .route("/:uuid")
+  .put(authProtection, updateAuthor)
+  .delete(authProtection, deleteAuthor);
 
 module.exports = router;

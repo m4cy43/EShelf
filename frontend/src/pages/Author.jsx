@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getAuthorBooks, resetBooks } from "../features/book/bookSlice";
 import Spinner from "../components/Spinner";
@@ -39,7 +39,10 @@ function Author() {
 
   return (
     <>
-      <h2>{books[0].authors[0].surname} {books[0].authors[0].name} {books[0].authors[0].middlename}</h2>
+      <h2>
+        {books[0].authors[0].surname} {books[0].authors[0].name}{" "}
+        {books[0].authors[0].middlename}
+      </h2>
       <main>
         <div className="table-box">
           <h5>{books.length} books found</h5>
@@ -53,7 +56,9 @@ function Author() {
                 <th>Section</th>
               </tr>
               {books ? (
-                books.map((book) => <AuthorTableLine book={book} key={book.uuid} />)
+                books.map((book) => (
+                  <AuthorTableLine book={book} key={book.uuid} />
+                ))
               ) : (
                 <AuthorTableLine
                   book={{

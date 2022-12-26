@@ -149,7 +149,7 @@ function Header() {
         </Link>
       </div>
       <div className="auth">
-        {(user && user.uuid !== "") ? (
+        {user && user.uuid !== "" ? (
           <>
             <IconContext.Provider value={{ color: "#e8f92e", size: "1em" }}>
               <FaSignOutAlt />
@@ -157,7 +157,63 @@ function Header() {
             <Link id="react-link" to="/login">
               <h4 onClick={onLogout}>LogOut</h4>
             </Link>
-            <h4>({user.email})</h4>
+            <Link to="/me">
+              <h4>({user.email})</h4>
+            </Link>
+            {user.isAdmin ? (
+              <div className="admin-drop-menu">
+                <IconContext.Provider
+                  value={{ color: "#ff0000", size: "1.5em" }}
+                >
+                  <FiMenu className="admin-panel" />
+                </IconContext.Provider>
+                <div className="admin-panel-box">
+                  <h4>Admin panel</h4>
+                  <input
+                    type="submit"
+                    name="button"
+                    value="Add new Book"
+                    onClick={() => {
+                      navigate("/newbook");
+                    }}
+                  />
+                  <input
+                    type="submit"
+                    name="button"
+                    value="Verify list"
+                    onClick={() => {
+                      navigate("/verifylist");
+                    }}
+                  />
+                  <input
+                    type="submit"
+                    name="button"
+                    value="Booking list"
+                    onClick={() => {
+                      navigate("/bookinglist");
+                    }}
+                  />
+                  <input
+                    type="submit"
+                    name="button"
+                    value="Debt list"
+                    onClick={() => {
+                      navigate("/debtlist");
+                    }}
+                  />
+                  <input
+                    type="submit"
+                    name="button"
+                    value="Set new admin"
+                    onClick={() => {
+                      navigate("/setadmin");
+                    }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
           </>
         ) : (
           <>

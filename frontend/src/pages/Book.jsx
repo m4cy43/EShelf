@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteBook, oneBook, resetBooks } from "../features/book/bookSlice";
@@ -6,7 +6,6 @@ import Spinner from "../components/Spinner";
 import "./css/book.css";
 import {
   bookTheBook,
-  getAllDebts,
   oneBookDebt,
   resetDebts,
   unbookTheBook,

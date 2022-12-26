@@ -7,7 +7,6 @@ const {
   changeCred,
   verifyUser,
   setAdmin,
-  setSAdmin,
   getUnverified,
 } = require("../controllers/userController");
 
@@ -29,7 +28,5 @@ router.get("/verify", authProtection, getUnverified);
 router.put("/verify/:uuid", authProtection, verifyUser);
 // PUT /api/user/adm/{uuid}
 router.put("/adm/:uuid", authProtection, setAdmin);
-// PUT /api/user/sadm
-router.put("/sadm", authProtection, setSAdmin);
 
 module.exports = router;

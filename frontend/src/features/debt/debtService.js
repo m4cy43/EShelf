@@ -42,11 +42,22 @@ const unbookTheBook = async (query, token) => {
   return res.data;
 };
 
+const getBoth = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.get(URL + `both`, config);
+  return res.data;
+};
+
 const debtService = {
   getAllDebts,
   oneBookDebt,
   bookTheBook,
   unbookTheBook,
+  getBoth,
 };
 
 export default debtService;

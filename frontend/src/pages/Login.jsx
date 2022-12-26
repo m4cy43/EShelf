@@ -53,24 +53,24 @@ function Login() {
     <>
       <h2>LogIn</h2>
       <main>
-          <div className="login-box">
-            <h4>SignIn</h4>
-            <form onSubmit={onSubmit}>
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                onChange={onChange}
-              />
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                onChange={onChange}
-              />
-              <input type="submit" name="button" value="Enter" />
-            </form>
-          </div>
+        <div className="login-box">
+          <h4>SignIn</h4>
+          <form onSubmit={onSubmit}>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              onChange={onChange}
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              onChange={onChange}
+            />
+            <input type="submit" name="button" value="Enter" />
+          </form>
+        </div>
       </main>
     </>
   );

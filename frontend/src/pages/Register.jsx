@@ -37,15 +37,15 @@ function Register() {
 
   const onChange = (e) => {
     setFormData((previousState) => ({
-      ...previousState,      
+      ...previousState,
       [e.target.name]: e.target.value,
     }));
   };
 
   const onSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (password !== password2) {
-      console.error('Passwords do not match')
+      console.error("Passwords do not match");
     } else {
       const userData = {
         email,
@@ -53,10 +53,10 @@ function Register() {
         name,
         surname,
         phone,
-      }
-      dispatch(signup(userData))
+      };
+      dispatch(signup(userData));
     }
-  }
+  };
 
   return (
     <>

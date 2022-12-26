@@ -27,7 +27,7 @@
 }
 
 .book-info span {
-  color: #e8f92e
+  color: #e8f92e;
 }
 
 .book-bottom-panel {
@@ -48,16 +48,16 @@
   background-color: #68b16f;
 }
 
-h6 a:nth-child(2n){
+h6 a:nth-child(2n) {
   color: #000000;
-  text-decoration:underline solid #000000 1.25px;
+  text-decoration: underline solid #000000 1.25px;
   text-underline-offset: 2px;
 }
 
-h6 a{
+h6 a {
   margin: 0px 3px 0px 3px;
 }
 
-.book-info h6{
-  margin-bottom: 5px
+.book-info h6 {
+  margin-bottom: 5px;
 }

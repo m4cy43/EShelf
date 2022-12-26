@@ -2,39 +2,38 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import debtService from "./debtService";
 
 const initialState = {
-  debts:
-    {
-      user: [
-        {
-          uuid: "",
-          email: "",
-          name: "",
-          surname: "",
-          phone: "",
-          books: [
-            {
-              uuid: "",
-              title: "",
-              year: 0,
-              authors: [
-                {
-                  uuid: "",
-                  name: "",
-                  surname: "",
-                  middlename: "",
-                },
-              ],
-              debt: {
+  debts: {
+    user: [
+      {
+        uuid: "",
+        email: "",
+        name: "",
+        surname: "",
+        phone: "",
+        books: [
+          {
+            uuid: "",
+            title: "",
+            year: 0,
+            authors: [
+              {
                 uuid: "",
-                isBooked: false,
-                isDebted: "",
-                deadlineDate: "",
+                name: "",
+                surname: "",
+                middlename: "",
               },
+            ],
+            debt: {
+              uuid: "",
+              isBooked: false,
+              isDebted: "",
+              deadlineDate: "",
             },
-          ],
-        },
-      ],
-    },
+          },
+        ],
+      },
+    ],
+  },
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -113,6 +112,24 @@ export const unbookTheBook = createAsyncThunk(
   }
 );
 
+export const getBoth = createAsyncThunk(
+  "debts/getBoth",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await debtService.getBoth(token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const debtSlice = createSlice({
   name: "debts",
   initialState,
@@ -169,6 +186,19 @@ export const debtSlice = createSlice({
         state.debts = action.payload;
       })
       .addCase(unbookTheBook.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(getBoth.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getBoth.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.debts = action.payload;
+      })
+      .addCase(getBoth.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

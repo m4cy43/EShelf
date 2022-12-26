@@ -9,7 +9,7 @@ const {
   createBook,
   deleteBook,
   incBookNum,
-  decBookNum
+  decBookNum,
 } = require("../controllers/bookController");
 
 // Auth middleware
@@ -21,7 +21,10 @@ const authProtection = require("../middleware/authMiddleware");
 router.route("/").get(getAllBooks).post(authProtection, createBook);
 // GET /api/book/one/{uuid}
 // DELETE /api/book/one/{uuid}
-router.route("/one/:uuid").delete(authProtection, deleteBook).get(getBookByUuid);
+router
+  .route("/one/:uuid")
+  .delete(authProtection, deleteBook)
+  .get(getBookByUuid);
 // GET /api/book/find?title=_
 router.route("/find").get(getSimplyBooks);
 // GET /api/book/afind?title=_&author=_&year=_&genre=_&section=_

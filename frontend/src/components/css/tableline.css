@@ -1,11 +1,11 @@
 @import "./tags.css";
 
-td a:nth-child(2n){
-    color: #000000;
-    text-decoration:underline solid #000000 1.25px;
-    text-underline-offset: 2px;
+td a:nth-child(2n) {
+  color: #000000;
+  text-decoration: underline solid #000000 1.25px;
+  text-underline-offset: 2px;
 }
 
-td a{
-    margin: 0px 3px 0px 3px;
+td a {
+  margin: 0px 3px 0px 3px;
 }
