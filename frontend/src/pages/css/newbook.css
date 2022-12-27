@@ -1,0 +1,34 @@
+@import "./form.css";
+
+.first-row,
+.second-row,
+.third-row,
+.fourth-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.second-row input:first-child {
+  width: 69%;
+}
+
+.second-row input:last-child {
+  width: 31%;
+}
+
+.fourth-row input {
+  overflow: scroll;
+}
+
+.form-box form input[type="submit"] {
+  background-color: #17344f;
+  border: 2px #d9d9d9 solid;
+  color: #e8f92e;
+  width: 50%;
+}
+
+.form-box form input[type="submit"]:hover {
+  background-color: #68b16f;
+}

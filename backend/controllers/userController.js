@@ -38,6 +38,8 @@ const createUser = asyncHandler(async (req, res) => {
     res.status(201).json({
       uuid: user.uuid,
       email: user.email,
+      name: user.name,
+      surname: user.surname,
       phone: user.phone,
       token: generateJWT(user.uuid),
       isVerified: user.isVerified,
@@ -62,6 +64,8 @@ const loginUser = asyncHandler(async (req, res) => {
     res.json({
       uuid: user.uuid,
       email: user.email,
+      name: user.name,
+      surname: user.surname,
       phone: user.phone,
       token: generateJWT(user.uuid),
       isVerified: user.isVerified,
@@ -119,10 +123,12 @@ const changeCred = asyncHandler(async (req, res) => {
   // Check update data
   if (userToUpdate) {
     res.status(201).json({
-      uuid: userToUpdate.uuid,
-      email: userToUpdate.email,
+      uuid: user.uuid,
+      email: user.email,
+      name: user.name,
+      surname: user.surname,
       phone: user.phone,
-      token: generateJWT(userToUpdate.uuid),
+      token: generateJWT(user.uuid),
       isVerified: user.isVerified,
       isAdmin: user.isAdmin,
     });
@@ -159,8 +165,10 @@ const verifyUser = asyncHandler(async (req, res) => {
   res.status(200).json({
     uuid: user.uuid,
     email: user.email,
+    name: user.name,
+    surname: user.surname,
     phone: user.phone,
-    token: generateJWT(userToUpdate.uuid),
+    token: generateJWT(user.uuid),
     isVerified: user.isVerified,
     isAdmin: user.isAdmin,
   });
@@ -199,8 +207,10 @@ const setAdmin = asyncHandler(async (req, res) => {
   res.status(200).json({
     uuid: user.uuid,
     email: user.email,
+    name: user.name,
+    surname: user.surname,
     phone: user.phone,
-    token: generateJWT(userToUpdate.uuid),
+    token: generateJWT(user.uuid),
     isVerified: user.isVerified,
     isAdmin: user.isAdmin,
   });

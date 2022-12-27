@@ -53,7 +53,7 @@ function Login() {
     <>
       <h2>LogIn</h2>
       <main>
-        <div className="login-box">
+        <div className="form-box">
           <h4>SignIn</h4>
           <form onSubmit={onSubmit}>
             <input

@@ -62,7 +62,7 @@ function Register() {
     <>
       <h2>Registration</h2>
       <main>
-        <div className="login-box">
+        <div className="form-box">
           <h4>SignUp</h4>
           <form onSubmit={onSubmit}>
             <input
