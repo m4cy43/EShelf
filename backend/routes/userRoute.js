@@ -8,6 +8,7 @@ const {
   verifyUser,
   setAdmin,
   getUnverified,
+  getNotAdmin,
 } = require("../controllers/userController");
 
 // Auth middleware
@@ -24,6 +25,8 @@ router.get("/authuser", authProtection, getAuthUser);
 router.put("/chngcred", authProtection, changeCred);
 // GET /api/user/verify
 router.get("/verify", authProtection, getUnverified);
+// GET /api/user/adm
+router.get("/adm", authProtection, getNotAdmin);
 // PUT /api/user/verify/{uuid}
 router.put("/verify/:uuid", authProtection, verifyUser);
 // PUT /api/user/adm/{uuid}

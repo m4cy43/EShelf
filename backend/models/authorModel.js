@@ -24,7 +24,7 @@ const Author = db.define(
   },
   {
     freezeTableName: true,
-    timestamps: true,
+    timestamps: false,
     createdAt: false,
   }
 );

@@ -9,3 +9,17 @@ td a:nth-child(2n) {
 td a {
   margin: 0px 3px 0px 3px;
 }
+
+.plusBut:hover {
+  background-color: #68b16f;
+}
+
+.minusBut:hover {
+  background-color: #ff0000;
+}
+
+.plusBut, .minusBut {
+  margin-left: 5px;
+  margin-right: 5px;
+  background-color: #688eb1;
+}

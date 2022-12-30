@@ -56,7 +56,7 @@ const tableSync = async () => {
   // Superadmin account creation
   // Encryption & hashing
   const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash("supersecretsuperadminpassword", salt);
+  const hash = await bcrypt.hash("eshelfsecretpassword", salt);
   // Account creation
   await User.findOrCreate({
     where: {

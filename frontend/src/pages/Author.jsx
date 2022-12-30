@@ -22,7 +22,7 @@ function Author() {
       console.log(message);
     }
 
-    if (!user) {
+    if (!user || user.uuid === "") {
       navigate("/login");
     }
 

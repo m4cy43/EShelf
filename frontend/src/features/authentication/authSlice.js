@@ -9,6 +9,9 @@ const initialState = {
     : {
         uuid: "",
         email: "",
+        name: "",
+        surname: "",
+        phone: "",
         token: "",
         isVerified: false,
         isAdmin: false,

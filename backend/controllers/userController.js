@@ -229,7 +229,23 @@ const getUnverified = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Unauthorized");
   }
-  res.status(200).json({ user });
+  res.status(200).json(user);
+});
+
+// Get all unverified users
+// GET /api/user/adm
+// Private
+const getNotAdmin = asyncHandler(async (req, res) => {
+  const user = await User.findAll({
+    where: { isAdmin: false },
+    order: [["updatedAt", "DESC"]],
+  });
+  // Check if auth user has admin rights
+  if (req.user.isAdmin !== true) {
+    res.status(401);
+    throw new Error("Unauthorized");
+  }
+  res.status(200).json(user);
 });
 
 // Auxiliary function
@@ -246,4 +262,5 @@ module.exports = {
   verifyUser,
   setAdmin,
   getUnverified,
+  getNotAdmin,
 };

@@ -44,6 +44,16 @@ const deleteBook = async (query, token) => {
   return res.data;
 };
 
+const createBook = async (data, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.post(URL, data, config);
+  return res.data;
+};
+
 const bookService = {
   getAllBooks,
   simpleFind,
@@ -51,6 +61,7 @@ const bookService = {
   oneBook,
   getAuthorBooks,
   deleteBook,
+  createBook,
 };
 
 export default bookService;
