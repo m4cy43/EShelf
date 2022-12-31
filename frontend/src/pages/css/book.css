@@ -61,3 +61,18 @@ h6 a {
 .book-info h6 {
   margin-bottom: 5px;
 }
+
+.number-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.number-buttons input {
+  padding: 3px;
+  margin-right: 5px;
+  margin-left: 5px;
+  height: 75%;
+  color: #e8f92e;
+  background-color: #17344f;
+}

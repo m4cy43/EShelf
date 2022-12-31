@@ -65,6 +65,114 @@ export const getAllSections = createAsyncThunk(
   }
 );
 
+export const createAuthor = createAsyncThunk(
+  "add/createAuthor",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await addService.createAuthor(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const createGenre = createAsyncThunk(
+  "add/createGenre",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await addService.createGenre(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const createSection = createAsyncThunk(
+  "add/createSection",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await addService.createSection(data, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const deleteAuthor = createAsyncThunk(
+  "add/deleteAuthor",
+  async (query, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await addService.deleteAuthor(query, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const deleteGenre = createAsyncThunk(
+  "add/deleteGenre",
+  async (query, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await addService.deleteGenre(query, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const deleteSection = createAsyncThunk(
+  "add/deleteSection",
+  async (query, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await addService.deleteSection(query, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const addSlice = createSlice({
   name: "add",
   initialState,
@@ -108,6 +216,78 @@ export const addSlice = createSlice({
         state.sections = action.payload;
       })
       .addCase(getAllSections.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(createAuthor.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createAuthor.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(createAuthor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(createGenre.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createGenre.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(createGenre.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(createSection.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createSection.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(createSection.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(deleteAuthor.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteAuthor.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(deleteAuthor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(deleteGenre.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteGenre.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(deleteGenre.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(deleteSection.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteSection.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(deleteSection.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

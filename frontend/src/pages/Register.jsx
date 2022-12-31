@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { reset, signup } from "../features/authentication/authSlice";
+import { toast } from "react-toastify";
 import "./css/form.css";
 
 function Register() {
@@ -25,7 +26,16 @@ function Register() {
 
   useEffect(() => {
     if (isError) {
-      console.error(message);
+      toast.error(message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
 
     if (isSuccess || (user && user.uuid !== "")) {
@@ -45,7 +55,16 @@ function Register() {
   const onSubmit = (e) => {
     e.preventDefault();
     if (password !== password2) {
-      console.error("Passwords do not match");
+      toast.error("Passwords do not match", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } else {
       const userData = {
         email,

@@ -286,7 +286,27 @@ const incBookNum = asyncHandler(async (req, res) => {
   }
   book.number++;
   await book.save();
-  res.status(200).json({ num: book.number });
+  const theBook = await Book.findByPk(req.params.uuid, {
+    include: [
+      { model: Section, attributes: ["uuid", "sectionName"] },
+      {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+      {
+        model: Genre,
+        attributes: ["uuid", "genreName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+    attributes: ["uuid", "number", "title", "year", "description"],
+  });
+  res.status(200).json(theBook);
 });
 
 // Increase book num by one
@@ -301,13 +321,31 @@ const decBookNum = asyncHandler(async (req, res) => {
   }
   if (book.number <= 0) {
     book.number = 0;
-    await book.save();
-    res.status(200).json({ num: book.number });
   } else {
     book.number--;
-    await book.save();
-    res.status(200).json({ num: book.number });
   }
+  await book.save();
+  const theBook = await Book.findByPk(req.params.uuid, {
+    include: [
+      { model: Section, attributes: ["uuid", "sectionName"] },
+      {
+        model: Author,
+        attributes: ["uuid", "name", "surname", "middlename"],
+        through: {
+          attributes: [],
+        },
+      },
+      {
+        model: Genre,
+        attributes: ["uuid", "genreName"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+    attributes: ["uuid", "number", "title", "year", "description"],
+  });
+  res.status(200).json(theBook);
 });
 
 module.exports = {

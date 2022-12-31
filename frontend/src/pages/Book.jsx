@@ -1,7 +1,13 @@
 import { useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteBook, oneBook, resetBooks } from "../features/book/bookSlice";
+import {
+  deleteBook,
+  oneBook,
+  resetBooks,
+  incBookNum,
+  decBookNum,
+} from "../features/book/bookSlice";
 import Spinner from "../components/Spinner";
 import "./css/book.css";
 import {
@@ -67,14 +73,30 @@ function Book() {
     };
   };
 
+  const incNum = () => {
+    dispatch(incBookNum(uuid));
+  };
+
+  const decNum = () => {
+    dispatch(decBookNum(uuid));
+  };
+
   return (
     <>
       <h2>Book page</h2>
       <main>
         <div className="book-box">
           <div className="add-info">
-            <h5>{book.number} books in stock</h5>
-            <h5>Section: {book.section.sectionName}</h5>
+            {user.isAdmin ? (
+              <div className="number-buttons">
+                <h5>{book.number} books in stock</h5>
+                <input type="submit" value="+" onClick={incNum} />
+                <input type="submit" value="-" onClick={decNum} />
+              </div>
+            ) : (
+              <></>
+            )}
+            <h5>Section: {book.section ? book.section.sectionName : ""}</h5>
           </div>
           <div className="book-info">
             <h6>
@@ -125,7 +147,7 @@ function Book() {
                 <input type="submit" value="Take the book" onClick={takeBook} />
               )
             ) : (
-              <input type="submit" value="Authorize first" />
+              <input type="submit" value="Verify account first" />
             )}
           </div>
         </div>

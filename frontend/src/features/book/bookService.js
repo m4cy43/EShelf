@@ -54,6 +54,26 @@ const createBook = async (data, token) => {
   return res.data;
 };
 
+const incBookNum = async (query, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.put(URL + `inc/${query}`, {}, config);
+  return res.data;
+};
+
+const decBookNum = async (query, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.put(URL + `dec/${query}`, {}, config);
+  return res.data;
+};
+
 const bookService = {
   getAllBooks,
   simpleFind,
@@ -62,6 +82,8 @@ const bookService = {
   getAuthorBooks,
   deleteBook,
   createBook,
+  incBookNum,
+  decBookNum,
 };
 
 export default bookService;

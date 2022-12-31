@@ -304,7 +304,7 @@ const deleteUserDebt = asyncHandler(async (req, res) => {
     throw new Error("User have no debt");
   }
   await debt.destroy();
-  let changeNumber = await Book.findByPk(book);
+  let changeNumber = await Book.findByPk(bookq);
   changeNumber.debtedNumber--;
   changeNumber.number++;
   await changeNumber.save();

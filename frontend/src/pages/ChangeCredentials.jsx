@@ -1,17 +1,21 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { reset, login } from "../features/authentication/authSlice";
+import { reset, changeCred } from "../features/authentication/authSlice";
 import { toast } from "react-toastify";
 import "./css/form.css";
 
-function Login() {
+function ChangeCredentials() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    password2: "",
+    name: "",
+    surname: "",
+    phone: "",
   });
 
-  const { email, password } = formData;
+  const { email, password, password2, name, surname, phone } = formData;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -22,7 +26,7 @@ function Login() {
 
   useEffect(() => {
     if (isError) {
-      toast.error("Wrong email or password", {
+      toast.error(message, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -34,8 +38,8 @@ function Login() {
       });
     }
 
-    if (isSuccess || (user && user.uuid !== "")) {
-      navigate("/");
+    if (isSuccess) {
+      navigate("/me");
     }
 
     dispatch(reset());
@@ -50,21 +54,35 @@ function Login() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-
-    const userData = {
-      email,
-      password,
-    };
-
-    dispatch(login(userData));
+    if (password !== password2) {
+      toast.error("Passwords do not match", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else {
+      const userData = {
+        email,
+        password,
+        name,
+        surname,
+        phone,
+      };
+      dispatch(changeCred(userData));
+    }
   };
 
   return (
     <>
-      <h2>LogIn</h2>
+      <h2>Change Credentials</h2>
       <main>
         <div className="form-box">
-          <h4>SignIn</h4>
+          <h4>User Data</h4>
           <form onSubmit={onSubmit}>
             <input
               type="email"
@@ -78,6 +96,30 @@ function Login() {
               placeholder="Enter your password"
               onChange={onChange}
             />
+            <input
+              type="password"
+              name="password2"
+              placeholder="Repeat your password"
+              onChange={onChange}
+            />
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your name"
+              onChange={onChange}
+            />
+            <input
+              type="text"
+              name="surname"
+              placeholder="Enter your surname"
+              onChange={onChange}
+            />
+            <input
+              type="text"
+              name="phone"
+              placeholder="Enter phone number"
+              onChange={onChange}
+            />
             <input type="submit" name="button" value="Enter" />
           </form>
         </div>
@@ -86,4 +128,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ChangeCredentials;

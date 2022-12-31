@@ -88,11 +88,6 @@ const getAuthUser = asyncHandler(async (req, res) => {
 // PUT /api/user/chngcred
 // Private
 const changeCred = asyncHandler(async (req, res) => {
-  // Check if user verified
-  if (req.user.isVerified !== true) {
-    res.status(401);
-    throw new Error("User is not verified yet");
-  }
   const { email, password, name, surname, phone } = req.body;
   // Check the value
   if (!email || !password || !name || !surname || !phone) {
@@ -123,14 +118,14 @@ const changeCred = asyncHandler(async (req, res) => {
   // Check update data
   if (userToUpdate) {
     res.status(201).json({
-      uuid: user.uuid,
-      email: user.email,
-      name: user.name,
-      surname: user.surname,
-      phone: user.phone,
-      token: generateJWT(user.uuid),
-      isVerified: user.isVerified,
-      isAdmin: user.isAdmin,
+      uuid: userToUpdate.uuid,
+      email: userToUpdate.email,
+      name: userToUpdate.name,
+      surname: userToUpdate.surname,
+      phone: userToUpdate.phone,
+      token: generateJWT(userToUpdate.uuid),
+      isVerified: userToUpdate.isVerified,
+      isAdmin: userToUpdate.isAdmin,
     });
   } else {
     res.status(400);

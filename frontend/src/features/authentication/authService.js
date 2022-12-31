@@ -22,10 +22,24 @@ const logout = () => {
   localStorage.removeItem("user");
 };
 
+const changeCred = async (userData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.put(URL + "chngcred", userData, config);
+  if (res.data) {
+    localStorage.setItem("user", JSON.stringify(res.data));
+  }
+  return res.data;
+};
+
 const authService = {
   signup,
   login,
   logout,
+  changeCred,
 };
 
 export default authService;

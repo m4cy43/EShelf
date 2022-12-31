@@ -179,6 +179,42 @@ export const createBook = createAsyncThunk(
   }
 );
 
+export const incBookNum = createAsyncThunk(
+  "books/incBookNum",
+  async (query, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await bookService.incBookNum(query, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const decBookNum = createAsyncThunk(
+  "books/decBookNum",
+  async (query, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await bookService.decBookNum(query, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const bookSlice = createSlice({
   name: "books",
   initialState,
@@ -273,6 +309,32 @@ export const bookSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(createBook.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(incBookNum.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(incBookNum.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.book = action.payload;
+      })
+      .addCase(incBookNum.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(decBookNum.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(decBookNum.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.book = action.payload;
+      })
+      .addCase(decBookNum.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

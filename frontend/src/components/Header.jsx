@@ -209,6 +209,30 @@ function Header() {
                       navigate("/setadmin");
                     }}
                   />
+                  <input
+                    type="submit"
+                    name="button"
+                    value="Authors"
+                    onClick={() => {
+                      navigate("/authorslist");
+                    }}
+                  />
+                  <input
+                    type="submit"
+                    name="button"
+                    value="Genres"
+                    onClick={() => {
+                      navigate("/genreslist");
+                    }}
+                  />
+                  <input
+                    type="submit"
+                    name="button"
+                    value="Sections"
+                    onClick={() => {
+                      navigate("/sectionslist");
+                    }}
+                  />
                 </div>
               </div>
             ) : (

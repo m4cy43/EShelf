@@ -23,7 +23,7 @@ function TableLine({ book }) {
           return <a key={el.uuid}>{el.genreName}</a>;
         })}
       </td>
-      <td>{book.section.sectionName}</td>
+      <td>{book.section ? book.section.sectionName : ""}</td>
     </tr>
   );
 }

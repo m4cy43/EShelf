@@ -35,6 +35,10 @@ function PersonalAccount() {
     return <Spinner />;
   }
 
+  const changeCred = () => {
+    navigate("/chngcred");
+  }
+
   return (
     <>
       <h2>Personal Account</h2>
@@ -59,11 +63,11 @@ function PersonalAccount() {
                 <span>Phone: </span>
                 {user.phone}
               </h6>
-              <input type="button" value="Change credentials" />
+              <input type="button" value="Change credentials" onClick={changeCred} />
             </div>
           </div>
           <div className="debt-list-box">
-            <h5>{debts.user[0].books.length} books in this list</h5>
+            <h5>{debts.user.length !==0 ? debts.user[0].books.length : 0} books in this list</h5>
             <div className="debt-list">
               <table>
                 <tbody>
@@ -74,7 +78,7 @@ function PersonalAccount() {
                     <th>Author</th>
                     <th>Year</th>
                   </tr>
-                  {debts.user[0].books ? (
+                  {debts.user.length !== 0 ? (
                     debts.user[0].books.map((debt) => (
                       <PersonalDebtLine debt={debt} key={debt.uuid} />
                     ))
