@@ -94,14 +94,16 @@ const changeCred = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Value is missing");
   }
+  // To update the current user
+  let userToUpdate = await User.findByPk(req.user.uuid);
   // Check if user exists by email
   const checkIfUserExists = await User.findOne({ where: { email } });
   if (checkIfUserExists) {
-    res.status(400);
-    throw new Error("The user already exists");
+    if (userToUpdate.email !== email) {
+      res.status(400);
+      throw new Error("User with such email already exists");
+    }
   }
-  // To update the current user
-  let userToUpdate = await User.findByPk(req.user.uuid);
   // Encryption & hashing
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password.toString(), salt);

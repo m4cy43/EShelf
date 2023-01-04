@@ -5,14 +5,18 @@ function DebtsTableLine({ user, book, approve, decline }) {
   return (
     <tr>
       <td>
-        <input
-          type="submit"
-          value="+"
-          className="plusBut"
-          onClick={() => {
-            approve(user.uuid, book.uuid);
-          }}
-        />
+        {approve ? (
+          <input
+            type="submit"
+            value="+"
+            className="plusBut"
+            onClick={() => {
+              approve(user.uuid, book.uuid);
+            }}
+          />
+        ) : (
+          <></>
+        )}
         {decline ? (
           <input
             type="submit"

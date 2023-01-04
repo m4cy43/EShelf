@@ -56,7 +56,7 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 });
 
 export const changeCred = createAsyncThunk(
-  "books/changeCred",
+  "auth/changeCred",
   async (user, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
@@ -129,7 +129,6 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-        state.user = null;
       });
   },
 });

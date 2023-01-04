@@ -73,8 +73,8 @@ function DebtList() {
                       <DebtsTableLine
                         user={usr}
                         book={bok}
-                        approve={deletedebt}
-                        decline={false}
+                        approve={false}
+                        decline={deletedebt}
                         key={bok.debt.uuid}
                       />
                     ))
