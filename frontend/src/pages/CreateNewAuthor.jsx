@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Spinner from "../components/Spinner";
 import "./css/form.css";
-import { createAuthor } from "../features/additional/addSlice";
+import { createAuthor, resetAdd } from "../features/additional/addSlice";
 import { toast } from "react-toastify";
 
 function CreateNewAuthor() {
@@ -63,6 +63,7 @@ function CreateNewAuthor() {
     };
 
     await dispatch(createAuthor(data));
+    await dispatch(resetAdd());
     await navigate("/authorslist");
   };
 

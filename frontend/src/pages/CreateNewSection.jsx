@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Spinner from "../components/Spinner";
 import "./css/form.css";
-import { createSection } from "../features/additional/addSlice";
+import { createSection, resetAdd } from "../features/additional/addSlice";
 import { toast } from "react-toastify";
 
 function CreateNewSection() {
@@ -59,6 +59,7 @@ function CreateNewSection() {
     };
 
     await dispatch(createSection(data));
+    await dispatch(resetAdd());
     await navigate("/sectionslist");
   };
 
@@ -76,7 +77,7 @@ function CreateNewSection() {
             <input
               type="text"
               name="sectionName"
-              placeholder="Enter genre"
+              placeholder="Enter section"
               onChange={onChange}
             />
             <input type="submit" name="button" value="Enter" />

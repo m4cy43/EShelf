@@ -17,6 +17,7 @@
   margin: 0 auto;
   border: 2px #17344f solid;
   position: relative;
+  max-width: 50%;
 }
 
 .form-box form input {

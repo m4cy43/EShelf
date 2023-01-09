@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Spinner from "../components/Spinner";
 import "./css/form.css";
-import { createGenre } from "../features/additional/addSlice";
+import { createGenre, resetAdd } from "../features/additional/addSlice";
 import { toast } from "react-toastify";
 
 function CreateNewGenre() {
@@ -59,6 +59,7 @@ function CreateNewGenre() {
     };
 
     await dispatch(createGenre(data));
+    await dispatch(resetAdd());
     await navigate("/genreslist");
   };
 
