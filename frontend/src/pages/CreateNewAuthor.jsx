@@ -53,7 +53,7 @@ function CreateNewAuthor() {
     }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async(e) => {
     e.preventDefault();
 
     const data = {
@@ -62,8 +62,8 @@ function CreateNewAuthor() {
       middlename,
     };
 
-    dispatch(createAuthor(data));
-    navigate("/authorslist");
+    await dispatch(createAuthor(data));
+    await navigate("/authorslist");
   };
 
   if (isLoading) {

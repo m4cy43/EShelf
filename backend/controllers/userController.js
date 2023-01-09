@@ -104,6 +104,14 @@ const changeCred = asyncHandler(async (req, res) => {
       throw new Error("User with such email already exists");
     }
   }
+  // Check if phone exists
+  const phoneExists = await User.findOne({ where: { phone } });
+  if (phoneExists) {
+    if (userToUpdate.phone !== phone) {
+      res.status(400);
+      throw new Error("User with such phone already exists");
+    }
+  }
   // Encryption & hashing
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password.toString(), salt);

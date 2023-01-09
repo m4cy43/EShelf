@@ -51,15 +51,15 @@ function CreateNewGenre() {
     }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async(e) => {
     e.preventDefault();
 
     const data = {
       genreName,
     };
 
-    dispatch(createGenre(data));
-    navigate("/genreslist");
+    await dispatch(createGenre(data));
+    await navigate("/genreslist");
   };
 
   if (isLoading) {

@@ -51,15 +51,15 @@ function CreateNewSection() {
     }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async(e) => {
     e.preventDefault();
 
     const data = {
       sectionName,
     };
 
-    dispatch(createSection(data));
-    navigate("/sectionslist");
+    await dispatch(createSection(data));
+    await navigate("/sectionslist");
   };
 
   if (isLoading) {

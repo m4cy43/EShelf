@@ -121,7 +121,7 @@ function NewBookForm() {
     }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const bookData = {
@@ -133,9 +133,9 @@ function NewBookForm() {
       authors: author,
       genres: genre,
     };
-    navigate("/");
-    dispatch(resetAdd());
-    dispatch(createBook(bookData));
+    await dispatch(resetAdd());
+    await dispatch(createBook(bookData));
+    await navigate("/");
   };
 
   return (

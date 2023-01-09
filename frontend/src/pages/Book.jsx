@@ -51,11 +51,11 @@ function Book() {
     return <Spinner />;
   }
 
-  const delTheBook = () => {
-    navigate("/");
-    dispatch(deleteBook(uuid));
-    return () => {
-      dispatch(resetBooks());
+  const delTheBook = async () => {
+    await dispatch(deleteBook(uuid));
+    await navigate("/");
+    return async () => {
+      await dispatch(resetBooks());
     };
   };
 
